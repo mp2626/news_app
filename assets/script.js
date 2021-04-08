@@ -37,7 +37,7 @@ function renderTopStories(data) {
         newsAbstract = news[i].abstract;
         console.log(newsAbstract);
 
-        Author = news[i].byline;
+        author = news[i].byline;
         console.log(Author);
 
         articleUrl = news[i].url;
