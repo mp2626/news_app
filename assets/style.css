@@ -1,0 +1,38 @@
+:root {
+ --backgound: black;
+ --text: ghostwhite;
+ --hearder: #194991;
+}
+
+
+body {
+    background-color: var(--backgound);
+    color: var(--text);
+}
+
+h2 {
+    font-size: 30px;
+}
+
+.jumbotron {
+    background-image: url(./images/mweBMY.jpg);
+}
+
+#weather {
+margin-left: 4.5%;
+}
+
+.card {
+    color: var(--backgound);
+    margin: 1%;
+}
+
+.card h1 {
+    font-size: 35px;
+}
+
+#searchBtn {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    align-items: center;
+}
