@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./assets/style.css" />
+    <title>Web News</title>
+</head>
+
+<body>
+    <Header>
+        <section class="jumbotron jumbotron-fluid custom-jumbotron">
+            <div class="container">
+                <div>
+                    <div class="col-12 col-md-6">
+                        <h1>Web News</h1>
+                        <p></p>
+                    </div>
+        </section>
+    </Header>
+
+    <main>
+        <!-- Search News Feature -->
+        <section class="container">
+            <div>
+                <form class="row">
+                    <div class="form-group col-12 col-md-6">
+                        <input for="search" type="text" id="search-input" placeholder="Location" class="form-control" />
+                    </div>
+                    <div class="form-group col-12 col-md-4">
+                        <button id="search" type="submit" class="btn btn-light">Search</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- Weather feature -->
+        <section id="weather">
+            <h1>Weather<span id="citySpan"></span></h1>
+        </section>
+        <!-- Top News Feature -->
+        <section class="container-fluid">
+            <div id="newCards" class="row justify-content-center">
+            </div>
+        </section>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="./assets/script.js"></script>
+</body>
+
+</html>
