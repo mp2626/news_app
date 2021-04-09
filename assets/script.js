@@ -1,6 +1,6 @@
 // Top Stories Vars
 const newCard = $("#newCards");
-const search = $("#search")
+const nextNews = $("#topNews")
 
 let topNewsMin = 0;
 let topNewsMax = 5;
@@ -56,14 +56,17 @@ function renderTopStories(topNews) {
             console.log(newsLocalLocation);
         }
     }
-    topNewsMin += 5;
-    topNewsMax += 5;
-    console.log(topNewsMin, topNewsMax);
+
+    if (topNewsMin < news.length) {
+        topNewsMin += 5;
+        topNewsMax += 5;
+        console.log(topNewsMin, topNewsMax);
+    }
 }
 
 getTopStories();
 
-search.on("click", (event) => {
+nextNews.on("click", (event) => {
     event.preventDefault();
     renderTopStories(topNews);
 });
