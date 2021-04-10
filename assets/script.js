@@ -63,15 +63,15 @@ function renderTopStories(topNews) {
             // create elements
             newCardDiv = $('<div>').addClass('card col-md-11 col-lg-4');
             cardTile = $('<h1>').addClass('card-header').text(tile);
+            cardLocation = $('<h3>').text(capNewsLocalLocation);
             cardBody = $('<div>').addClass('card-body');
             cardAbstract = $('<p>').text(newsAbstract);
             cardAuthor = $('<h2>').text(author);
-            cardLocation = $('<h3>').text(capNewsLocalLocation);
+            cardsUrlButton = $('<a>').text('Article').attr('href', articleUrl).attr('target', '""').addClass('btn btn-light')
             // Build cards
-            cardBody.append(cardBody, cardLocation, cardAbstract, cardAuthor);
+            cardBody.append(cardBody, cardLocation, cardAbstract, cardAuthor, cardsUrlButton);
             newCardDiv.append(cardTile, cardBody);
             newCard.append(newCardDiv);
-
         }
     }
 
