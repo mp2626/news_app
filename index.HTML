@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="./assets/style.css" />
     <title>Web News</title>
 </head>
@@ -45,9 +46,85 @@
             <div id="newCards" class="row justify-content-center">
             </div>
         </section>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="./assets/script.js"></script>
+
+
+
+    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
+        <!-- Article Search Feature -->
+        <section class="container-fluid">
+            <button class="btn btn-light" data-toggle="modal" data-target="#searchModal">Artical Search</button>
+            <div id="articleCards" class="column justify-content-center"></div>
+        </section>
+    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
+    </main>
+
+    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
+     <!-- Modal adopted from mini project-->
+    <div class="modal fade custom-modal" id="searchModal" tabindex="-1" role="dialog"
+        aria-labelledby="project-modal-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Article Search.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="project-form">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="art-name-input">Keywords</label>
+                            <input type="text" id="art-key-input" class="form-control" placeholder="Enter keywords" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="art-type-input">Article Type</label>
+                            <select class="form-control" id="art-type-input">
+                                <option selected disabled>Pick one...</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Health Care">Health Care</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="art-number-input">Number of Articles to be listed</label>
+                            <input type="number" id="art-number-input" class="form-control" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="begin-date-input">Begin Date</label>
+                            <input type="text" id="begin-date-input" class="form-control" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="end-date-input">End Date</label>
+                            <input type="text" id="end-date-input" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Previous
+                            </button>
+                            <div class="dropdown-menu" id="dropdownBtn" aria-labelledby="dropdownMenuButton">
+                              <!-- <a class="dropdown-item">Action</a> -->
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script src="./assets/script.js"></script>
 </body>
 
 </html>
