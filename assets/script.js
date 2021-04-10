@@ -1,6 +1,11 @@
 // Top Stories Vars
 const newCard = $("#newCards");
-const nextNews = $("#topNews")
+const nextNews = $("#topNews");
+const toDaysDate = $("#date");
+
+// date 
+toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
+// bootstrap
 
 let topNewsMin = 0;
 let topNewsMax = 5;
@@ -27,7 +32,7 @@ function getTopStories(search) {
 
 function renderTopStories(topNews) {
     // clear section
-
+    newCard.children().remove('div');
     // vars
     news = topNews.results;
     console.log(topNews.results);
@@ -49,11 +54,24 @@ function renderTopStories(topNews) {
             articleUrl = news[i].url;
             console.log(articleUrl);
 
-            newsLocation = news[i].section;
-            console.log(newsLocation);
-
             newsLocalLocation = news[i].subsection;
-            console.log(newsLocalLocation);
+            capNewsLocalLocation = newsLocalLocation[0].toUpperCase() + newsLocalLocation.slice(1);
+            console.log(capNewsLocalLocation);
+
+            articleUrl = news[i].url;
+            console.log(articleUrl);
+            // create elements
+            newCardDiv = $('<div>').addClass('card col-md-11 col-lg-4');
+            cardTile = $('<h1>').addClass('card-header').text(tile);
+            cardBody = $('<div>').addClass('card-body');
+            cardAbstract = $('<p>').text(newsAbstract);
+            cardAuthor = $('<h2>').text(author);
+            cardLocation = $('<h3>').text(capNewsLocalLocation);
+            // Build cards
+            cardBody.append(cardBody, cardLocation, cardAbstract, cardAuthor);
+            newCardDiv.append(cardTile, cardBody);
+            newCard.append(newCardDiv);
+
         }
     }
 
