@@ -52,7 +52,7 @@
     <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
         <!-- Article Search Feature -->
         <section class="container-fluid">
-            <button class="btn btn-light" data-toggle="modal" data-target="#searchModal">Artical Search</button>
+            <button id="modalBtn" class="btn btn-light" data-toggle="modal" data-target="#searchModal">Artical Search</button>
             <div id="articleCards" class="column justify-content-center"></div>
         </section>
     <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
@@ -74,21 +74,21 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="art-name-input">Keywords</label>
-                            <input type="text" id="art-key-input" class="form-control" placeholder="Enter keywords" required />
+                            <input type="text" id="art-key-input" class="form-control" placeholder="Enter keywords"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="art-type-input">Article Type</label>
-                            <select class="form-control" id="art-type-input">
-                                <option selected disabled>Pick one...</option>
-                                <option value="Sports">Sports</option>
-                                <option value="Health Care">Health Care</option>
+                            <label for="sortInput">Sort By</label>
+                            <select class="form-control" id="sortInput" required>
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="best">Relevance</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="art-number-input">Number of Articles to be listed</label>
-                            <input type="number" id="art-number-input" class="form-control" required />
+                            <label for="newsDeskInput">Article Type</label>
+                            <select class="form-control" id="newsDeskInput"></select>
                         </div>
 
                         <div class="form-group">
