@@ -7,10 +7,21 @@
  --boldText: "Ginger Bold";
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     background-color: var(--grey);
     color: var(--text);
+}
+
+header h1 {
+    font-size: 60px;
+}
+
+#date {
+    font-size: 20px;
 }
 
 h1 {
@@ -22,7 +33,6 @@ h2 {
 }
 
 .jumbotron {
-    /* background-image: url(./images/mweBMY.jpg); */
     background-color: var(--orange);
 }
 
@@ -33,12 +43,17 @@ h2 {
 }
 
 .btn:hover {
+    background-color: var(--base);
     color: var(--orange);
 }
 
 #weather {
     font-style: var(--boldText);   
     margin-left: 4.5%;
+}
+
+.stories{
+    text-align: center;
 }
 
 .card {
@@ -58,4 +73,19 @@ h2 {
     margin-top: 1%;
     margin-bottom: 1%;
     align-items: center;
+}
+#topNewsBar {
+    display: flex;
+    justify-content: center;
+}
+
+#topNews {
+    width: 50% ;
+    margin-top: 1%;
+    margin-bottom: 3%;
+    background-color: var(--orange);
+}
+
+#topNews:hover {
+    background-color: var(--base);
 }
