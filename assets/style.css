@@ -1,13 +1,20 @@
 :root {
- --backgound: black;
+ --background: black;
+ --grey:grey;
  --text: ghostwhite;
- --hearder: #194991;
+ --base:#E7EEED;
+ --orange:#fc7233;
+ --boldText: "Ginger Bold";
 }
 
 
 body {
-    background-color: var(--backgound);
+    background-color: var(--grey);
     color: var(--text);
+}
+
+h1 {
+font-style: var(--boldText);
 }
 
 h2 {
@@ -15,20 +22,36 @@ h2 {
 }
 
 .jumbotron {
-    background-image: url(./images/mweBMY.jpg);
+    /* background-image: url(./images/mweBMY.jpg); */
+    background-color: var(--orange);
+}
+
+.btn {
+    background-color: var(--grey);
+    color: var(--text);
+    border-radius: 15%;
+}
+
+.btn:hover {
+    color: var(--orange);
 }
 
 #weather {
-margin-left: 4.5%;
+    font-style: var(--boldText);   
+    margin-left: 4.5%;
 }
 
 .card {
-    color: var(--backgound);
+    background-color: var(--grey);
+    border: 1px solid var(--orange);
+    color: var(--text);
     margin: 1%;
 }
 
 .card h1 {
+    border: 1px solid var(--text);
     font-size: 35px;
+    margin-top: 2%;
 }
 
 #searchBtn {
