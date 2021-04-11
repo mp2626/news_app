@@ -43,25 +43,17 @@ function renderTopStories(topNews) {
         if (i >= topNewsMin && i < topNewsMax) {
 
             tile = news[i].title;
-            console.log(tile);
-
             newsAbstract = news[i].abstract;
-            console.log(newsAbstract);
-
             author = news[i].byline;
-            console.log(author);
-
             articleUrl = news[i].url;
-            console.log(articleUrl);
-
             newsLocalLocation = news[i].subsection;
-            capNewsLocalLocation = newsLocalLocation[0].toUpperCase() + newsLocalLocation.slice(1);
-            console.log(capNewsLocalLocation);
-
+            if (newsLocalLocation != "") {
+                capNewsLocalLocation = newsLocalLocation[0].toUpperCase() + newsLocalLocation.slice(1);
+            }
             articleUrl = news[i].url;
-            console.log(articleUrl);
+
             // create elements
-            newCardDiv = $('<div>').addClass('card col-md-11 col-lg-4');
+            newCardDiv = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
             cardTile = $('<h1>').addClass('card-header').text(tile);
             cardLocation = $('<h3>').text(capNewsLocalLocation);
             cardBody = $('<div>').addClass('card-body');
@@ -82,9 +74,14 @@ function renderTopStories(topNews) {
     }
 }
 
-getTopStories();
+function scroll() {
+    window.scrollTo(0, 200);
+}
 
 nextNews.on("click", (event) => {
     event.preventDefault();
     renderTopStories(topNews);
+    scroll();
 });
+
+getTopStories();
