@@ -89,3 +89,23 @@ h2 {
 #topNews:hover {
     background-color: var(--base);
 }
+
+/* ztztztztztzt */
+.modal-content {
+    background-color: grey;
+}
+
+.article{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: rgb(5, 22, 53);
+    border: 1.5px solid var(--orange);
+    margin:20px;
+}
+
+.artLink{
+    padding: 5px;
+    background-color: orange;
+}
+/* ztztztztztzt */
