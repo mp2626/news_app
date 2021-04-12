@@ -35,7 +35,6 @@ function renderTopStories(topNews) {
     newCard.children().remove('div');
     // vars
     news = topNews.results;
-    //console.log(topNews.results);
 
     // loop to gather data and create feed
     for (i = 0; i < news.length; i++) {
@@ -70,7 +69,6 @@ function renderTopStories(topNews) {
     if (topNewsMin < news.length) {
         topNewsMin += 5;
         topNewsMax += 5;
-        //console.log(topNewsMin, topNewsMax);
     }
 }
 
@@ -85,10 +83,6 @@ nextNews.on("click", (event) => {
 });
 
 getTopStories();
-
-
-
-
 
 //ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
 //Article Search API Script below
@@ -217,13 +211,6 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
 
 
 
-
- 
-
-  
-
-
-
 //Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
 //JQuery Datepicker, select date range function.
 $( function() {
@@ -267,8 +254,3 @@ function test(){
   console.log('yes')
 }
 //---------------------------------------------------------------------------------------------------------
-
-
-
-
-
