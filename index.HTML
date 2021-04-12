@@ -13,57 +13,45 @@
 
 <body>
     <Header>
-        <section class="jumbotron jumbotron-fluid custom-jumbotron">
+        <Section id="nav">
+            <div id="topNewsBar">
+                <button id="topNews" type="submit" class="btn btn-light customBtn">Top Stories</button>
+                <button id="modalBtn" class="btn btn-light customBtn" data-toggle="modal"
+                    data-target="#searchModal">Artical
+                    Search</button>
+            </div>
+        </Section>
+        <section class="jumbotron jumbotron-fluid">
             <div class="container">
                 <div>
-                    <div class="col-12 col-md-6">
+                    <div id="webNews" class="col-12 col-md-6">
                         <h1>Web News</h1>
                         <p id="date"></p>
                     </div>
         </section>
-    </Header>
 
+    </Header>
     <main>
-        <!-- Search News Feature -->
-        <section class="container">
-            <div>
-                <form class="row">
-                    <div class="form-group col-12 col-md-6">
-                        <input for="search" type="text" id="search-input" placeholder="Location" class="form-control" />
-                    </div>
-                    <div class="form-group col-12 col-md-4">
-                        <button id="search" type="submit" class="btn btn-light">Search</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-        <!-- Weather feature -->
-        <section id="weather">
-            <h1><span id="citySpan"></span></h1>
-        </section>
         <!-- Top News Feature -->
         <section class="container-fluid">
             <div class="stories">
-                <h1 id="tS">Top Stories</h1>
+                <h1 id="tS"></h1>
             </div>
             <div id="newCards" class="row justify-content-center">
             </div>
-            <div id="topNewsBar">
-                <button id="topNews" type="submit" class="btn btn-light">More Top Stories</button>
-            </div>
         </section>
 
-
-    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
+        <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
         <!-- Article Search Feature -->
         <section class="container-fluid">
-            <button id="modalBtn" class="btn btn-light" data-toggle="modal" data-target="#searchModal">Artical Search</button>
+            <!-- <button id="modalBtn" class="btn btn-light customBtn" data-toggle="modal" data-target="#searchModal">Artical
+                Search</button> -->
             <div id="articleCards" class="column justify-content-center"></div>
         </section>
     </main>
 
     <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
-     <!-- Modal adopted from mini project-->
+    <!-- Modal adopted from mini project-->
     <div class="modal fade custom-modal" id="searchModal" tabindex="-1" role="dialog"
         aria-labelledby="project-modal-form" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -78,7 +66,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="art-name-input">Keywords</label>
-                            <input type="text" id="art-key-input" class="form-control" placeholder="Enter keywords"/>
+                            <input type="text" id="art-key-input" class="form-control" placeholder="Enter keywords" />
                         </div>
 
                         <div class="form-group">
@@ -109,11 +97,12 @@
                     </div>
                     <div class="modal-footer">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Previous
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Previous
                             </button>
                             <div class="dropdown-menu" id="dropdownBtn" aria-labelledby="dropdownMenuButton">
-                              <!-- <a class="dropdown-item">Action</a> -->
+                                <!-- <a class="dropdown-item">Action</a> -->
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Search</button>
@@ -134,4 +123,5 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script src="./assets/script.js"></script>
 </body>
+
 </html>
