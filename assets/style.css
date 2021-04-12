@@ -1,44 +1,96 @@
 :root {
- --backgound: black;
- --text: ghostwhite;
- --hearder: #194991;
-}
-
-
-body {
-    background-color: var(--backgound);
-    color: var(--text);
-}
-
-h2 {
-    font-size: 30px;
-}
-
-.jumbotron {
-    background-image: url(./images/mweBMY.jpg);
-}
-
-#weather {
-margin-left: 4.5%;
-}
-
-.card {
-    color: var(--backgound);
-    margin: 1%;
-}
-
-.card h1 {
-    font-size: 35px;
-}
-
-#searchBtn {
-    margin-top: 1%;
-    margin-bottom: 1%;
-    align-items: center;
-}
+    --background: black;
+    --grey:grey;
+    --text: ghostwhite;
+    --base:#E7EEED;
+    --orange:#fc7233;
+    --boldText: "Ginger Bold";
+   }
+   
+   html {
+       scroll-behavior: smooth;
+   }
+   
+   body {
+       background-color: var(--grey);
+       color: var(--text);
+   }
+   
+   header h1 {
+       font-size: 60px;
+   }
+   
+   #date {
+       font-size: 20px;
+   }
+   
+   h1 {
+   font-style: var(--boldText);
+   }
+   
+   h2 {
+       font-size: 30px;
+   }
+   
+   .jumbotron {
+       background-color: var(--orange);
+   }
+   
+   .btn {
+       background-color: var(--grey);
+       color: var(--text);
+       border-radius: 15%;
+   }
+   
+   .btn:hover {
+       background-color: var(--base);
+       color: var(--orange);
+   }
+   
+   #weather {
+       font-style: var(--boldText);   
+       margin-left: 4.5%;
+   }
+   
+   .stories{
+       text-align: center;
+   }
+   
+   .card {
+       background-color: var(--grey);
+       border: 1.5px solid var(--orange);
+       color: var(--text);
+       margin: 1%;
+   }
+   
+   .card h1 {
+       border: 1px solid var(--text);
+       font-size: 35px;
+       margin-top: 2%;
+   }
+   
+   #searchBtn {
+       margin-top: 1%;
+       margin-bottom: 1%;
+       align-items: center;
+   }
+   #topNewsBar {
+       display: flex;
+       justify-content: center;
+   }
+   
+   #topNews {
+       width: 50% ;
+       margin-top: 1%;
+       margin-bottom: 3%;
+       background-color: var(--orange);
+   }
+   
+   #topNews:hover {
+       background-color: var(--base);
+   }
 
 /* ztztztztztzt */
-
 .modal-content {
     background-color: grey;
 }
@@ -47,7 +99,8 @@ margin-left: 4.5%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    background-color: grey;
+    background-color: rgb(5, 22, 53);
+    border: 1.5px solid var(--orange);
     margin:20px;
 }
 
