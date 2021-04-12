@@ -32,6 +32,10 @@ h2 {
     font-size: 30px;
 }
 
+h3 {
+    font-size: 25px;
+}
+
 .jumbotron {
     background-color: var(--orange);
 }
@@ -80,7 +84,7 @@ h2 {
 }
 
 #topNews {
-    width: 50% ;
+    width: 40% ;
     margin-top: 1%;
     margin-bottom: 3%;
     background-color: var(--orange);
@@ -88,4 +92,10 @@ h2 {
 
 #topNews:hover {
     background-color: var(--base);
+}
+
+@media screen and (min-width: 768px) {
+#topNews {
+    width: 20%;
+}
 }

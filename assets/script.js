@@ -32,6 +32,7 @@ function getTopStories(search) {
 
 function renderTopStories(topNews) {
     // clear section
+    $('#tS').text('Top Stories');
     newCard.children().remove('div');
     // vars
     news = topNews.results;
@@ -55,10 +56,10 @@ function renderTopStories(topNews) {
             // create elements
             newCardDiv = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
             cardTile = $('<h1>').addClass('card-header').text(tile);
-            cardLocation = $('<h3>').text(capNewsLocalLocation);
+            cardLocation = $('<h2>').text(capNewsLocalLocation);
             cardBody = $('<div>').addClass('card-body');
             cardAbstract = $('<p>').text(newsAbstract);
-            cardAuthor = $('<h2>').text(author);
+            cardAuthor = $('<h3>').text(author);
             cardsUrlButton = $('<a>').text('Article').attr('href', articleUrl).attr('target', '""').addClass('btn btn-light')
             // Build cards
             cardBody.append(cardBody, cardLocation, cardAbstract, cardAuthor, cardsUrlButton);
