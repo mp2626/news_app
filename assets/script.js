@@ -5,6 +5,26 @@ const toDaysDate = $("#date");
 
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
+
+
+//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
+function currentWeatherlocation(location) {
+  var openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
+
+  fetch(openWeather)
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(data){
+    console.log(data);
+    $("#currentWeatherlocation").text()
+  });
+}
+  currentWeatherlocation();
+  
+
+
+
 // bootstrap
 
 let topNewsMin = 0;
@@ -281,4 +301,3 @@ $(function () {
     return date;
   }
 });
-//Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
