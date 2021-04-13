@@ -5,6 +5,43 @@ const toDaysDate = $("#date");
 
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
+
+
+//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
+// Gets User location
+function getLocation (){
+  const successCallBack = (position) =>{
+    console.log(position)
+    var lat = position.coords.latitude
+    var lon = position.coords.longitude
+    console.log(lat,lon)
+    localWeather(lat,lon)
+  }
+  const errorCallBack = (error) =>{
+    console.error(error)
+  }
+navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+}
+getLocation();
+
+// Display's local weather
+function localWeather(lat,lon) {
+  var openWeather = "https:/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
+
+  fetch(openWeather)
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(data){
+    console.log(data);
+    $("#currentWeatherlocation").text()
+  });
+};
+  localWeather();
+  
+
+
+
 // bootstrap
 
 let topNewsMin = 0;
@@ -274,4 +311,3 @@ $(function () {
     return date;
   }
 });
-//Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
