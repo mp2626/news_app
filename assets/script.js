@@ -33,6 +33,7 @@ function getTopStories(search) {
 function renderTopStories(topNews) {
   // clear section
   $('#tS').text('Top Stories');
+  artCardsEl.children().remove(); //remove previous searched article results
   newCard.children().remove('div');
   // vars
   news = topNews.results;
@@ -61,7 +62,7 @@ function renderTopStories(topNews) {
       cardAuthor = $('<h3>').text(author);
       cardsUrlButton = $('<a>').text('Article').attr('href', articleUrl).attr('target', '""').addClass('btn btn-light')
       // Build cards
-      cardBody.append(cardBody, cardLocation, cardAbstract, cardAuthor, cardsUrlButton);
+      cardBody.append(cardLocation, cardAbstract, cardAuthor, cardsUrlButton);
       newCardDiv.append(cardTile, cardBody);
       newCard.append(newCardDiv);
     }
@@ -97,13 +98,14 @@ var artCardsEl = $('#articleCards');
 
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
+
 //LocalStorage variables
 var index;
 var searchObj = { keyword: "aaa", sort: "aaa", type: "aaa", begin_date: "aaa", end_date: "aaa" };
 var searchHistory = [];
 var storedSearch = JSON.parse(localStorage.getItem("searchHistory"));
 //---------------------------------------------------------------------------------------------------------------------
-const newsDeskArray = ['Arts', 'Automobiles', 'Books', 'Business', 'Cars', 'Culture', 'Dining', 'Education', 'Environment', 'Fashion', 'Financial', 'Food', 'Foreign', 'Health', 'Movies', 'National', 'Politics', 'Science', 'Sports', 'SundayBusiness', 'Technology', 'Travel', 'U.S.', 'Vacation', 'Washington', 'Weather', 'World']
+const newsDeskArray = ['Arts', 'Automobiles', 'Business', 'Culture', 'Education', 'Environment', 'Fashion', 'Food', 'Foreign', 'Health', 'Movies', 'Politics', 'Science', 'Sports', 'SundayBusiness', 'Technology', 'Travel', 'U.S.', 'Weather', 'World']
 createNewsDeskTypes();
 function createNewsDeskTypes() {
   for (var i = 0; i < newsDeskArray.length; i++) {
@@ -112,13 +114,12 @@ function createNewsDeskTypes() {
   }
 };
 
-//script run from here
+//Article Searching starts from here.
 $('#modalBtn').on('click', modalUpdate);
-//---------------------------------------------------------------------------------------------------------------------
-//Functions section below
-//---------------------------------------------------------------------------------------------------------------------
 //Load previous search and create drop down buttons
 function modalUpdate() {
+  newCard.children().remove('div'); // clear top story cards.
+  $('#tS').text('Article Search Results');
   $('#dropdownBtn').children().remove(); //Needs to clean up buttons generated from previous event click.
   if (storedSearch) { historyBtns() } else { return };
 }
@@ -131,33 +132,48 @@ function historyBtns() {
   }
 }
 //---------------------------------------------------------------------------------------------------------------------
+$('#clearBtn').on('click', clearHistory);
+function clearHistory(event) {
+  event.preventDefault();
+  searchHistory = [];
+  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+  $('#dropdownBtn').children().remove();
+}
+//---------------------------------------------------------------------------------------------------------------------
 //Click on drop down buttons to auto complete previous inputs.
 $('#dropdownBtn').on('click', '.dropdown-item', autoComplete);
 function autoComplete(event) {
+  event.preventDefault();
   var btnClicked = $(event.target);
   //get the index of the clicked button
   index = parseInt(btnClicked.attr("data.docs-index"));
   $('#art-key-input').val(storedSearch[index].keyword);
   $('#sortInput').val(storedSearch[index].sort);
   $('#newsDeskInput').val(storedSearch[index].type);
-  $('#begin-date-input').val(storedSearch[index].begin_date);
-  $('#end-date-input').val(storedSearch[index].end_date);
+  var reformatBegin = storedSearch[index].begin_date;
+  var reformatEnd = storedSearch[index].end_date;
+  $('#begin-date-input').val(moment(reformatBegin, "YYYYMMDD").format("D MMM, YY"));
+  $('#end-date-input').val(moment(reformatEnd, "YYYYMMDD").format("D MMM, YY"));
 }
 //---------------------------------------------------------------------------------------------------------------------
 //Actions after click on search.
-searchFormEl.on('submit', modalSubmit);
+searchFormEl.on('click', '#searchBtn', modalSubmit);
 function modalSubmit(event) {
   event.preventDefault();
-  artCardsEl.children().remove(); //remove previous searched article results
-  artKey = $('#art-key-input').val().trim();
-  artSort = $('#sortInput').val();
-  newsDesk = $('#newsDeskInput').val();
-  artBegin = $('#begin-date-input').val();
-  artEnd = $('#end-date-input').val();
-  saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //save inputs.
-  displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
-  searchFormEl[0].reset();
-  searchModalEl.modal('hide');
+  if( $('#begin-date-input').val() && $('#end-date-input').val() ){
+    artCardsEl.children().remove(); //remove previous searched article results
+    artKey = $('#art-key-input').val().trim();
+    artSort = $('#sortInput').val();
+    newsDesk = $('#newsDeskInput').val();
+    var formatedBegin = $('#begin-date-input').val();
+    var formatedEnd = $('#end-date-input').val();
+    artBegin = moment(formatedBegin, "D MMM, YY").format("YYYYMMDD");
+    artEnd = moment(formatedEnd, "D MMM, YY").format("YYYYMMDD");
+    saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //save inputs.
+    displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
+    searchFormEl[0].reset();
+    searchModalEl.modal('hide');
+  } else {alert('Please specify Begin and End Date!')} 
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
@@ -184,20 +200,22 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (data) {
-          console.log(data.response.docs);
+          //console.log(data.response.docs);
           if (!data.response.docs.length) { alert("Result Not Found, please make new searches."); return }
           for (var i = 0; i < data.response.docs.length; i++) {
-            var artEl = $('<div>').addClass('article');
-            artCardsEl.append(artEl);
-            var artTypeEl = $('<h4>').text(data.response.docs[i].news_desk);
+            var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
+            var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
             var pubDate = data.response.docs[i].pub_date.split("T");
-            var dateEl = $('<h4>').text(pubDate[0]);
-            var artTitleEl = $('<h2>').addClass('artTitle').text(data.response.docs[i].headline.main);
-            var snippetEl = $('<h3>').text(data.response.docs[i].snippet);
-            var authorEl = $('<h4>').text(data.response.docs[i].byline.original);
-            var artLinkEl = $('<a>').addClass('artLink').attr("href", data.response.docs[i].web_url).text("Article");
-            artLinkEl.attr("target", "_blank")
-            artEl.append(artTypeEl, dateEl, artTitleEl, snippetEl, authorEl, artLinkEl);
+            var dateEl = $('<h5>').text(pubDate[0]);
+            var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
+            var cardBody = $('<div>').addClass('card-body');
+            var snippetEl = $('<p>').text(data.response.docs[i].snippet);
+            var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
+            var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
+            artLinkEl.attr("target", "_blank");
+            cardBody.append(snippetEl, authorEl, artLinkEl);
+            artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
+            artCardsEl.append(artEl);
           };
         });
       } else {
@@ -215,7 +233,7 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
 //Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
 //JQuery Datepicker, select date range function.
 $(function () {
-  var dateFormat = "yymmdd",
+  var dateFormat = "d M, y",
     from = $("#begin-date-input")
       .datepicker({
         defaultDate: "+1w",
@@ -223,7 +241,7 @@ $(function () {
         changeYear: true,
         numberOfMonths: 1,
         maxDate: 0,
-        dateFormat: "yymmdd"
+        dateFormat: "d M, y"
       })
       .on("change", function () {
         to.datepicker("option", "minDate", getDate(this));
@@ -234,7 +252,7 @@ $(function () {
       changeYear: true,
       numberOfMonths: 1,
       maxDate: 0,
-      dateFormat: "yymmdd"
+      dateFormat: "d M, y"
     })
       .on("change", function () {
         from.datepicker("option", "maxDate", getDate(this));
@@ -251,7 +269,3 @@ $(function () {
   }
 });
 //Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
-function test() {
-  console.log('yes')
-}
-//---------------------------------------------------------------------------------------------------------
