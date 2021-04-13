@@ -2,7 +2,9 @@
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
-
+const mainWeatherEl = $("#currentWeatherlocaton");
+let weatherData = ""
+const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
@@ -28,7 +30,7 @@ getLocation();
 function localWeather(lat,lon) {
   var openWeather = "https:/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
-  fetch(openWeather)
+ fetch(openWeather)
   .then(function(response) {
     return response.json();
   })
@@ -37,9 +39,16 @@ function localWeather(lat,lon) {
     $("#currentWeatherlocation").text()
   });
 };
-  localWeather();
   
 
+//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
+function localWeather(data) {
+
+ var WeatherEl = $("<h3>").text(weatherData);
+
+mainWeatherEl.append(WeatherEl)
+
+}
 
 
 // bootstrap
