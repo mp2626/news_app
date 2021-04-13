@@ -66,10 +66,11 @@ function renderTopStories(topNews) {
       newCard.append(newCardDiv);
     }
   }
-
   if (topNewsMin < news.length) {
     topNewsMin += 5;
     topNewsMax += 5;
+  } else {
+    $('#tS').text("You're up to date with today's top stories. Why not search for an article?");
   }
 }
 

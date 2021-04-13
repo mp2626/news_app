@@ -19,14 +19,14 @@ body {
 h1 {
     font-style: var(--boldText);
     }
+
+h2 {
+     font-size: 30px;
+}
     
-    h2 {
-        font-size: 30px;
-    }
-    
-    h3 {
-        font-size: 25px;
-    }
+h3 {
+    font-size: 25px;
+}
 
 header h1 {
     font-size: 60px;
