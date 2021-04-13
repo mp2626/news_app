@@ -41,17 +41,13 @@
             </div>
         </section>
 
-        <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
         <!-- Article Search Feature -->
         <section class="container-fluid">
-            <!-- <button id="modalBtn" class="btn btn-light customBtn" data-toggle="modal" data-target="#searchModal">Artical
-                Search</button> -->
-            <div id="articleCards" class="column justify-content-center"></div>
+            <div id="articleCards" class="row justify-content-center"></div>
         </section>
     </main>
 
-    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
-    <!-- Modal adopted from mini project-->
+    <!-- Modal -->
     <div class="modal fade custom-modal" id="searchModal" tabindex="-1" role="dialog"
         aria-labelledby="project-modal-form" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -96,8 +92,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-light" id="clearBtn">Clear</button>
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Previous
                             </button>
@@ -105,20 +102,15 @@
                                 <!-- <a class="dropdown-item">Action</a> -->
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-light" id="searchBtn">Search</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-    <!-- ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-            crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script src="./assets/script.js"></script>
