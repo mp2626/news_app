@@ -3,7 +3,7 @@ const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
 const mainWeatherEl = $("#currentWeatherlocaton");
-let weatherData = ""
+let weatherData = "";
 const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
@@ -11,42 +11,42 @@ toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
 //current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 // Gets User location
-function getLocation (){
-  const successCallBack = (position) =>{
-    console.log(position)
-    var lat = position.coords.latitude
-    var lon = position.coords.longitude
-    console.log(lat,lon)
-    localWeather(lat,lon)
+function getLocation() {
+  const successCallBack = (position) => {
+    console.log(position);
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    console.log(lat, lon);
+    localWeather(lat, lon);
   }
-  const errorCallBack = (error) =>{
-    console.error(error)
+  const errorCallBack = (error) => {
+    console.error(error);
   }
-navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+  navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
 }
 getLocation();
 
 // Display's local weather
-function localWeather(lat,lon) {
+function localWeather(lat, lon) {
   var openWeather = "https:/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
- fetch(openWeather)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data){
-    console.log(data);
-    $("#currentWeatherlocation").text()
-  });
+  fetch(openWeather)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      $("#currentWeatherlocation").text()
+    });
 };
-  
+
 
 //current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 function localWeather(data) {
 
- var WeatherEl = $("<h3>").text(weatherData);
+  var WeatherEl = $("<h3>").text(weatherData);
 
-mainWeatherEl.append(WeatherEl)
+  mainWeatherEl.append(WeatherEl)
 
 }
 
@@ -208,7 +208,7 @@ function modalSubmit(event) {
   event.preventDefault();
   newCard.children().remove('div'); // clear top story cards.
   $('#tS').text('Article Search Results');
-  if( $('#begin-date-input').val() && $('#end-date-input').val() ){
+  if ($('#begin-date-input').val() && $('#end-date-input').val()) {
     artCardsEl.children().remove(); //remove previous searched article results
     artKey = $('#art-key-input').val().trim();
     artSort = $('#sortInput').val();
@@ -220,21 +220,21 @@ function modalSubmit(event) {
     displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else {alert('Please specify Begin and End Date!')} 
+  } else { alert('Please specify Begin and End Date!') }
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
   searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd };
-  if(searchHistory){ 
-    for (var i = 0; i < searchHistory.length; i++){
+  if (searchHistory) {
+    for (var i = 0; i < searchHistory.length; i++) {
       //if this searchObj found in searchHistory, jump out.
-      if(JSON.stringify(searchHistory[i])==JSON.stringify(searchObj)){return}
+      if (JSON.stringify(searchHistory[i]) == JSON.stringify(searchObj)) { return }
     }
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   }
-  else{
-    searchHistory=[];
+  else {
+    searchHistory = [];
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   }
@@ -252,25 +252,25 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           //console.log(data.response.docs);
-          if (!data.response.docs.length) { alert("Result Not Found, please make new searches.")}
-            else {
-              saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
-              for (var i = 0; i < data.response.docs.length; i++) {
-                var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
-                var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
-                var pubDate = data.response.docs[i].pub_date.split("T");
-                var dateEl = $('<h5>').text(pubDate[0]);
-                var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
-                var cardBody = $('<div>').addClass('card-body');
-                var snippetEl = $('<p>').text(data.response.docs[i].snippet);
-                var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
-                var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
-                artLinkEl.attr("target", "_blank");
-                cardBody.append(snippetEl, authorEl, artLinkEl);
-                artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
-                artCardsEl.append(artEl);
-              };
-            }
+          if (!data.response.docs.length) { alert("Result Not Found, please make new searches.") }
+          else {
+            saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
+            for (var i = 0; i < data.response.docs.length; i++) {
+              var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
+              var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
+              var pubDate = data.response.docs[i].pub_date.split("T");
+              var dateEl = $('<h5>').text(pubDate[0]);
+              var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
+              var cardBody = $('<div>').addClass('card-body');
+              var snippetEl = $('<p>').text(data.response.docs[i].snippet);
+              var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
+              var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
+              artLinkEl.attr("target", "_blank");
+              cardBody.append(snippetEl, authorEl, artLinkEl);
+              artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
+              artCardsEl.append(artEl);
+            };
+          }
         });
       } else {
         alert('Error: ' + response.statusText);
