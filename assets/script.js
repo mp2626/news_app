@@ -2,9 +2,55 @@
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
-
+const mainWeatherEl = $("#currentWeatherlocaton");
+let weatherData = "";
+const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
+
+
+//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
+// Gets User location
+function getLocation() {
+  const successCallBack = (position) => {
+    console.log(position);
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    console.log(lat, lon);
+    localWeather(lat, lon);
+  }
+  const errorCallBack = (error) => {
+    console.log(error);
+  }
+  navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+}
+getLocation();
+
+// Display's local weather
+function localWeather(lat, lon) {
+  var openWeather = "https:/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
+
+  fetch(openWeather)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      $("#currentWeatherlocation").text()
+    });
+};
+
+
+//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
+function localWeather(data) {
+
+  var WeatherEl = $("<h3>").text(weatherData);
+
+  mainWeatherEl.append(WeatherEl)
+
+}
+
+
 // bootstrap
 
 let topNewsMin = 0;
@@ -107,9 +153,9 @@ var artKey, artSort, newsDesk, artBegin, artEnd;
 
 //LocalStorage variables
 var index;
-var searchObj = { keyword: "aaa", sort: "aaa", type: "aaa", begin_date: "aaa", end_date: "aaa" };
+var searchObj;
 var searchHistory = [];
-
+var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
 //---------------------------------------------------------------------------------------------------------------------
 const newsDeskArray = ['Arts', 'Automobiles', 'Business', 'Culture', 'Education', 'Environment', 'Fashion', 'Food', 'Foreign', 'Health', 'Movies', 'Politics', 'Science', 'Sports', 'SundayBusiness', 'Technology', 'Travel', 'U.S.', 'Weather', 'World']
 createNewsDeskTypes();
@@ -124,10 +170,7 @@ function createNewsDeskTypes() {
 $('#modalBtn').on('click', modalUpdate);
 //Load previous search and create drop down buttons
 function modalUpdate() {
-  newCard.children().remove('div'); // clear top story cards.
-  $('#tS').text('Article Search Results');
   $('#dropdownBtn').children().remove(); //Needs to clean up buttons generated from previous event clicks.
-  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   if (searchHistory) { historyBtns() } else { return };
 }
 //---------------------------------------------------------------------------------------------------------------------
@@ -152,7 +195,6 @@ $('#dropdownBtn').on('click', '.dropdown-item', autoComplete);
 function autoComplete(event) {
   event.preventDefault();
   var btnClicked = $(event.target);
-  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   if (searchHistory) {
     //get the index of the clicked button
     index = parseInt(btnClicked.attr("data-index"));
@@ -165,11 +207,14 @@ function autoComplete(event) {
     $('#end-date-input').val(moment(reformatEnd, "YYYYMMDD").format("D MMM, YY"));
   }
 }
+
 //---------------------------------------------------------------------------------------------------------------------
 //Actions after click on search.
 searchFormEl.on('click', '#searchBtn', modalSubmit);
 function modalSubmit(event) {
   event.preventDefault();
+  newCard.children().remove('div'); // clear top story cards.
+  $('#tS').text('Article Search Results');
   if ($('#begin-date-input').val() && $('#end-date-input').val()) {
     artCardsEl.children().remove(); //remove previous searched article results
     artKey = $('#art-key-input').val().trim();
@@ -186,19 +231,14 @@ function modalSubmit(event) {
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
-  searchObj.keyword = artKey;
-  searchObj.sort = artSort;
-  searchObj.type = newsDesk;
-  searchObj.begin_date = artBegin;
-  searchObj.end_date = artEnd;
-  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd };
   if (searchHistory) {
-    //if this searchObj found in searchHistory, ignore it.
-    if (searchHistory.includes(searchObj)) { return; }
-    else {
-      searchHistory.push(searchObj);
-      localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    for (var i = 0; i < searchHistory.length; i++) {
+      //if this searchObj found in searchHistory, jump out.
+      if (JSON.stringify(searchHistory[i]) == JSON.stringify(searchObj)) { return }
     }
+    searchHistory.push(searchObj);
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   }
   else {
     searchHistory = [];
@@ -287,4 +327,3 @@ $(function () {
     return date;
   }
 });
-//Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget
