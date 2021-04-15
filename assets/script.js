@@ -177,8 +177,6 @@ function createNewsDeskTypes() {
 $('#modalBtn').on('click', modalUpdate);
 //Load previous search and create drop down buttons
 function modalUpdate() {
-  newCard.children().remove('div'); // clear top story cards.
-  $('#tS').text('Article Search Results');
   $('#dropdownBtn').children().remove(); //Needs to clean up buttons generated from previous event clicks.
   searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   if (searchHistory) { historyBtns() } else { return };
@@ -223,6 +221,8 @@ function autoComplete(event) {
 searchFormEl.on('click', '#searchBtn', modalSubmit);
 function modalSubmit(event) {
   event.preventDefault();
+  newCard.children().remove('div'); // clear top story cards.
+  $('#tS').text('Article Search Results');
   if( $('#begin-date-input').val() && $('#end-date-input').val() ){
     artCardsEl.children().remove(); //remove previous searched article results
     artKey = $('#art-key-input').val().trim();
