@@ -8,61 +8,9 @@ var currentDay = moment().format("DD/MM/YY")
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
 
-//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
-// Gets User location
-function getLocation (){
-  const successCallBack = (position) =>{
-    console.log(position)
-    var lat = position.coords.latitude
-    var lon = position.coords.longitude
-    console.log(lat,lon)
-    getlocalWeather(lat,lon)
-  }
-  const errorCallBack = (error) =>{
-    console.error(error)
-  }
-navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
-}
-getLocation();
-
-// Display's local weather
-function getlocalWeather(lat,lon) {
-  var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
-
-  fetch(openWeather)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data){
-    console.log(data);
-    displayLocalWeather(data)
-    $("#currentWeatherlocation").text()
-  });
-};
-
-function displayLocalWeather(data){
-  let icon = data.weather[0].icon
-  
-  var skyWeather = "http://openweathermap.org/img/wn/"+ icon +"@2x.png"
-  
-  var currentTemp = document.createElement('h4');
-  var date = document.createElement('h4');
-  var currentHumid = document.createElement('h4'); 
-  var windSpeed = document.createElement('h4');
-  var weatherIcon = document.createElement('img')
-
-  weatherIcon.src = skyWeather
-  currentTemp.textContent("Current Tempreture:" + data.main.temp + "°C")
-  currentHumid.textContent("Current Humidity:"+data.main.humidity+"%")
-  windSpeed.textContent("Current Windspeed:"+data.wind.speed+"km/h")
-  date.textContent = ("(" +currentDay + ")")
-
-}
-  
 
 
 
-// bootstrap
 
 let topNewsMin = 0;
 let topNewsMax = 5;
@@ -155,6 +103,11 @@ var artCardsEl = $('#articleCards');
 var flashClass = $('.flash'); 
 var modalAlert = $('#modalAlert');
 var searchAlert = $('#searchAlert');
+var articlesPerPage = 4; //This number be change anytime if we want later.
+var lastPage;
+var pageIndex;
+var fetchedData;
+
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
 
@@ -259,7 +212,7 @@ function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
 //---------------------------------------------------------------------------------------------------------------------
 //EXAMPLE：https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=20210409&end_date=20210411&query=nets&fq=news_desk:(%22Sports%22)&sort=newest&api-key=gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6
 function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
-  //console.log(artKey); console.log(newsDesk);console.log(artSort);console.log(artBegin);console.log(artEnd);
+
   var targetUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date='
     + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&api-key=' + zhouTianKey;
   fetch(targetUrl)
@@ -267,22 +220,30 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           //console.log(data.response.docs);
-          if (!data.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
+          fetchedData = data;
+          if (!fetchedData.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
-            for (var i = 0; i < data.response.docs.length; i++) {
+            $('#artResults').text(data.response.docs.length + ' articles found to match your search.');
+            //To clear previous page btns first.
+            $('#pages').children().remove();
+            //To create page btns for search results.
+            var pageNum = 0;
+            for (var j = 0; j < data.response.docs.length; j=j+articlesPerPage) {
+              pageNum = pageNum + 1;
+              $('#pages').append($('<button>').addClass('pageBtn').attr('data-index', pageNum).text(pageNum));
+              lastPage = pageNum;
+            };
+            for (var i = 0; i < articlesPerPage; i++) {
               var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
               var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
               var pubDate = data.response.docs[i].pub_date.split("T");
               var dateEl = $('<h5>').text(pubDate[0]);
               var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
-              var cardBody = $('<div>').addClass('card-body');
-              var snippetEl = $('<p>').text(data.response.docs[i].snippet);
+              var abstractEl = $('<p>').text(data.response.docs[i].abstract);
               var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
-              var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
-              artLinkEl.attr("target", "_blank");
-              cardBody.append(snippetEl, authorEl, artLinkEl);
-              artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
+              var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).attr("target", "_blank").text("Article");
+              artEl.append(artTypeEl, dateEl, artTitleEl, abstractEl, authorEl, artLinkEl);
               artCardsEl.append(artEl);
             };
           }
@@ -296,31 +257,43 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
     });
 };
 //---------------------------------------------------------------------------------------------------------------------
-
+//Click on page btns to show results in different pages.
+//Need an if condition for last page display! 
+//For example, if we have 10 results, 4 results per page, page 3 will only have 2 results.
+$('#pages').on('click', '.pageBtn', displayPage);
+function displayPage(event) {
+  $('#articleCards').children().remove();
+  var pageClicked = $(event.target);
+  pageIndex = parseInt(pageClicked.attr("data-index"))-1;
+  var targetPage = pageIndex*articlesPerPage;
+  var remainder = fetchedData.response.docs.length % articlesPerPage;
+  var loopNumber;
+  //If click on last page.
+  if ( parseInt(pageClicked.attr("data-index")) == lastPage ){ loopNumber = remainder }
+  else{ loopNumber = articlesPerPage }
+  for (var k = 0; k < loopNumber; k++) {
+    var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
+    var artTypeEl = $('<h5>').text(fetchedData.response.docs[targetPage+k].news_desk);
+    var pubDate = fetchedData.response.docs[targetPage+k].pub_date.split("T");
+    var dateEl = $('<h5>').text(pubDate[0]);
+    var artTitleEl = $('<h1>').addClass('card-header').text(fetchedData.response.docs[targetPage+k].headline.main);
+    var abstractEl = $('<p>').text(fetchedData.response.docs[targetPage+k].abstract);
+    var authorEl = $('<h3>').text(fetchedData.response.docs[targetPage+k].byline.original);
+    var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", fetchedData.response.docs[targetPage+k].web_url).attr("target", "_blank").text("Article");
+    artEl.append(artTypeEl, dateEl, artTitleEl, abstractEl, authorEl, artLinkEl);
+    artCardsEl.append(artEl);
+  }
+}
+//---------------------------------------------------------------------------------------------------------------------
 //Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget Widget 
 //JQuery Datepicker, select date range function.
 $(function () {
   var dateFormat = "d M, y",
     from = $("#begin-date-input")
-      .datepicker({
-        defaultDate: "+1w",
-        changeMonth: true,
-        changeYear: true,
-        numberOfMonths: 1,
-        maxDate: 0,
-        dateFormat: "d M, y"
-      })
+      .datepicker({ defaultDate: "+1w", changeMonth: true, changeYear: true, numberOfMonths: 1, maxDate: 0, dateFormat: "d M, y"})
       .on("change", function () {
-        to.datepicker("option", "minDate", getDate(this));
-      }),
-    to = $("#end-date-input").datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      changeYear: true,
-      numberOfMonths: 1,
-      maxDate: 0,
-      dateFormat: "d M, y"
-    })
+        to.datepicker("option", "minDate", getDate(this));}),
+    to = $("#end-date-input").datepicker({ defaultDate: "+1w", changeMonth: true, changeYear: true, numberOfMonths: 1, maxDate: 0, dateFormat: "d M, y"})
       .on("change", function () {
         from.datepicker("option", "maxDate", getDate(this));
       });
@@ -336,7 +309,6 @@ $(function () {
   }
 });
 
-
 //Set timer to flash message
 function flashing(){
   flashClass.css('opacity', '1');
@@ -344,3 +316,5 @@ function flashing(){
     flashClass.css('opacity','0');
   }, 2000)
 }
+
+
