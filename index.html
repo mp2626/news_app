@@ -28,7 +28,7 @@
                         <h1>Web News</h1>
                         <p id="date"></p>
                     </div>
-                    <div id="currentWeatherlocation">
+                    <div class="row" id="currentWeatherlocation">
 
                     </div>
         </section>
@@ -43,6 +43,7 @@
         <section class="container-fluid">
             <div class="stories">
                 <h1 id="tS"></h1>
+                <h2 class="flash" id="searchAlert"></h2>
             </div>
             <div id="newCards" class="row justify-content-center">
             </div>
@@ -60,7 +61,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Article Search.</h5>
+                    <h5 class="modal-title">Article Search.<span class="flash" id="modalAlert"></span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
