@@ -110,6 +110,16 @@ header h1 {
     background-color: var(--orangeCard);
 }
 
+.flash{
+    font-style: italic;
+    opacity: 0;
+}
+
+#modalAlert{
+    font-size: 15px;
+    padding-left: 10px;
+}
+  
 
 @media screen and (min-width: 768px) {
     .customBtn {

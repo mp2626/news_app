@@ -147,7 +147,9 @@ const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 var searchModalEl = $('#searchModal');
 var searchFormEl = $('#project-form');
 var artCardsEl = $('#articleCards');
-
+var flashClass = $('.flash'); 
+var modalAlert = $('#modalAlert');
+var searchAlert = $('#searchAlert');
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
 
@@ -227,7 +229,7 @@ function modalSubmit(event) {
     displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else { alert('Please specify Begin and End Date!') }
+  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing()}
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
@@ -259,7 +261,7 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           //console.log(data.response.docs);
-          if (!data.response.docs.length) { alert("Result Not Found, please make new searches.") }
+          if (!data.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
             for (var i = 0; i < data.response.docs.length; i++) {
@@ -280,11 +282,11 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
           }
         });
       } else {
-        alert('Error: ' + response.statusText);
+        searchAlert.text('Error: ' + response.statusText); flashing()
       }
     })
     .catch(function (error) {
-      alert('Unable to connect to NY Times Article Search API');
+      searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()
     });
 };
 //---------------------------------------------------------------------------------------------------------------------
@@ -327,3 +329,12 @@ $(function () {
     return date;
   }
 });
+
+
+//Set timer to flash message
+function flashing(){
+  flashClass.css('opacity', '1');
+  setTimeout(function(){ 
+    flashClass.css('opacity','0');
+  }, 2000)
+}
