@@ -152,7 +152,9 @@ const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 var searchModalEl = $('#searchModal');
 var searchFormEl = $('#project-form');
 var artCardsEl = $('#articleCards');
-
+var flashClass = $('.flash'); 
+var modalAlert = $('#modalAlert');
+var searchAlert = $('#searchAlert');
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
 
@@ -233,7 +235,7 @@ function modalSubmit(event) {
     displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else {alert('Please specify Begin and End Date!')} 
+  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing()}
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
@@ -270,32 +272,32 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           //console.log(data.response.docs);
-          if (!data.response.docs.length) { alert("Result Not Found, please make new searches.")}
-            else {
-              saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
-              for (var i = 0; i < data.response.docs.length; i++) {
-                var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
-                var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
-                var pubDate = data.response.docs[i].pub_date.split("T");
-                var dateEl = $('<h5>').text(pubDate[0]);
-                var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
-                var cardBody = $('<div>').addClass('card-body');
-                var snippetEl = $('<p>').text(data.response.docs[i].snippet);
-                var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
-                var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
-                artLinkEl.attr("target", "_blank");
-                cardBody.append(snippetEl, authorEl, artLinkEl);
-                artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
-                artCardsEl.append(artEl);
-              };
-            }
+          if (!data.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
+          else {
+            saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
+            for (var i = 0; i < data.response.docs.length; i++) {
+              var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
+              var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
+              var pubDate = data.response.docs[i].pub_date.split("T");
+              var dateEl = $('<h5>').text(pubDate[0]);
+              var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
+              var cardBody = $('<div>').addClass('card-body');
+              var snippetEl = $('<p>').text(data.response.docs[i].snippet);
+              var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
+              var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).text("Article");
+              artLinkEl.attr("target", "_blank");
+              cardBody.append(snippetEl, authorEl, artLinkEl);
+              artEl.append(artTypeEl, dateEl, artTitleEl, cardBody);
+              artCardsEl.append(artEl);
+            };
+          }
         });
       } else {
-        alert('Error: ' + response.statusText);
+        searchAlert.text('Error: ' + response.statusText); flashing()
       }
     })
     .catch(function (error) {
-      alert('Unable to connect to NY Times Article Search API');
+      searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()
     });
 };
 //---------------------------------------------------------------------------------------------------------------------
@@ -338,3 +340,12 @@ $(function () {
     return date;
   }
 });
+
+
+//Set timer to flash message
+function flashing(){
+  flashClass.css('opacity', '1');
+  setTimeout(function(){ 
+    flashClass.css('opacity','0');
+  }, 2000)
+}
