@@ -160,8 +160,8 @@ var artKey, artSort, newsDesk, artBegin, artEnd;
 
 //LocalStorage variables
 var index;
-var searchObj = { keyword: "aaa", sort: "aaa", type: "aaa", begin_date: "aaa", end_date: "aaa" };
-var searchHistory = [];
+var searchObj;
+var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
 
 //---------------------------------------------------------------------------------------------------------------------
 const newsDeskArray = ['Arts', 'Automobiles', 'Business', 'Culture', 'Education', 'Environment', 'Fashion', 'Food', 'Foreign', 'Health', 'Movies', 'Politics', 'Science', 'Sports', 'SundayBusiness', 'Technology', 'Travel', 'U.S.', 'Weather', 'World']
@@ -239,19 +239,14 @@ function modalSubmit(event) {
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
-  searchObj.keyword = artKey;
-  searchObj.sort = artSort;
-  searchObj.type = newsDesk;
-  searchObj.begin_date = artBegin;
-  searchObj.end_date = artEnd;
-  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date:artEnd}
   if(searchHistory){ 
-    //if this searchObj found in searchHistory, ignore it.
-    if (searchHistory.includes(searchObj)) { return; }
-    else { 
-      searchHistory.push(searchObj);
-      localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    for(var i = 0; i < searchHistory.length; i++){
+      //if this searchObj found in searchHistory, jump out.
+      if(JSON.stringify(searchHistory[i])==JSON.stringify(searchObj)){return}
     }
+    searchHistory.push(searchObj);
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   } 
   else{
     searchHistory=[];
