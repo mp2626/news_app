@@ -2,6 +2,8 @@
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
+const mainWeatherEl = $("#currentWeatherlocation");
+// let weatherData = ""
 var currentDay = moment().format("DD/MM/YY")
 
 // date 
@@ -10,55 +12,69 @@ toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
 //current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 // Gets User location
-function getLocation (){
-  const successCallBack = (position) =>{
-    console.log(position)
-    var lat = position.coords.latitude
-    var lon = position.coords.longitude
-    console.log(lat,lon)
-    getlocalWeather(lat,lon)
+function getLocation() {
+  const successCallBack = (position) => {
+    console.log(position);
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    console.log(lat, lon);
+    getlocalWeather(lat, lon);
   }
-  const errorCallBack = (error) =>{
+  const errorCallBack = (error) => {
     console.error(error)
   }
-navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+  navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
 }
 getLocation();
 
 // Display's local weather
-function getlocalWeather(lat,lon) {
+function getlocalWeather(lat, lon) {
   var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
   fetch(openWeather)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data){
-    console.log(data);
-    displayLocalWeather(data)
-    $("#currentWeatherlocation").text()
-  });
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      displayLocalWeather(data)
+      $("#currentWeatherlocation").text()
+    });
 };
 
-function displayLocalWeather(data){
-  let icon = data.weather[0].icon
-  
-  var skyWeather = "http://openweathermap.org/img/wn/"+ icon +"@2x.png"
-  
-  var currentTemp = document.createElement('h4');
-  var date = document.createElement('h4');
-  var currentHumid = document.createElement('h4'); 
-  var windSpeed = document.createElement('h4');
-  var weatherIcon = document.createElement('img')
+// // function displayLocalWeather(data) {
+// //   let icon = data.weather[0].icon
 
-  weatherIcon.src = skyWeather
-  currentTemp.textContent("Current Tempreture:" + data.main.temp + "°C")
-  currentHumid.textContent("Current Humidity:"+data.main.humidity+"%")
-  windSpeed.textContent("Current Windspeed:"+data.wind.speed+"km/h")
-  date.textContent = ("(" +currentDay + ")")
+// //   var skyWeather = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
 
+// //   var currentTemp = document.createElement('h4');
+// //   var date = document.createElement('h4');
+// //   var currentHumid = document.createElement('h4');
+// //   var windSpeed = document.createElement('h4');
+// //   var weatherIcon = document.createElement('img')
+
+// weatherIcon.src = skyWeather
+// currentTemp.textContent("Current Tempreture:" + data.main.temp + "°C")
+// currentHumid.textContent("Current Humidity:" + data.main.humidity + "%")
+// windSpeed.textContent("Current Windspeed:" + data.wind.speed + "km/h")
+// date.textContent = ("(" + currentDay + ")")
+
+function displayLocalWeather(weatherData) {
+
+  let icon = weatherData.weather[0].icon
+
+  var skyWeather = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+
+  console.log(weatherData.main.temp_max);
+  let weatherDataTemp = weatherData.main.temp;
+  let weatherDataWind = weatherData.wind.speed;
+  var weatherTempEl = $("<h5>").text("T: " + weatherDataTemp + " ℃").addClass("");
+  var weatherWindEl = $("<h5>").text("W: " + weatherDataWind + " Km/h").addClass("")
+  var weatherImgEl = $("<img>").attr("src", skyWeather).addClass("");
+  mainWeatherEl.append(weatherImgEl, weatherTempEl, weatherWindEl);
+  console.log(weatherDataTemp);
 }
-  
+
 
 
 
@@ -152,7 +168,7 @@ const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 var searchModalEl = $('#searchModal');
 var searchFormEl = $('#project-form');
 var artCardsEl = $('#articleCards');
-var flashClass = $('.flash'); 
+var flashClass = $('.flash');
 var modalAlert = $('#modalAlert');
 var searchAlert = $('#searchAlert');
 //Search inputs
@@ -223,7 +239,7 @@ function modalSubmit(event) {
   event.preventDefault();
   newCard.children().remove('div'); // clear top story cards.
   $('#tS').text('Article Search Results');
-  if( $('#begin-date-input').val() && $('#end-date-input').val() ){
+  if ($('#begin-date-input').val() && $('#end-date-input').val()) {
     artCardsEl.children().remove(); //remove previous searched article results
     artKey = $('#art-key-input').val().trim();
     artSort = $('#sortInput').val();
@@ -235,21 +251,21 @@ function modalSubmit(event) {
     displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing()}
+  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing() }
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
-  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date:artEnd}
-  if(searchHistory){ 
-    for(var i = 0; i < searchHistory.length; i++){
+  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd }
+  if (searchHistory) {
+    for (var i = 0; i < searchHistory.length; i++) {
       //if this searchObj found in searchHistory, jump out.
-      if(JSON.stringify(searchHistory[i])==JSON.stringify(searchObj)){return}
+      if (JSON.stringify(searchHistory[i]) == JSON.stringify(searchObj)) { return }
     }
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-  } 
-  else{
-    searchHistory=[];
+  }
+  else {
+    searchHistory = [];
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   }
@@ -338,9 +354,9 @@ $(function () {
 
 
 //Set timer to flash message
-function flashing(){
+function flashing() {
   flashClass.css('opacity', '1');
-  setTimeout(function(){ 
-    flashClass.css('opacity','0');
+  setTimeout(function () {
+    flashClass.css('opacity', '0');
   }, 2000)
 }
