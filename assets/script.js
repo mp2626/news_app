@@ -1,13 +1,18 @@
-// Top Stories Vars
+// Const Vars
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
 const mainWeatherEl = $("#currentWeatherlocaton");
+const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46";
+// Top Stories API Var
+const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
+// Changing Vars
 let weatherData = "";
-const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
+let topNewsMin = 0;
+let topNewsMax = 4;
+
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
-
 
 //current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 // Gets User location
@@ -49,15 +54,6 @@ function localWeather(data) {
   mainWeatherEl.append(WeatherEl)
 
 }
-
-
-// bootstrap
-
-let topNewsMin = 0;
-let topNewsMax = 4;
-
-// Top Stories API Var
-const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
 
 // Top Stories Fetch API Function
 function getTopStories(search) {

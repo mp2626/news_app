@@ -5,6 +5,7 @@
  --base:#E7EEED;
  --orange:#fc7233;
  --orangeCard: rgb(252, 114, 51, 0.6);
+ --orangeArticle: rgb(252, 114, 51, 0.9);
  --boldText: "Ginger Bold";
 }
 
@@ -107,14 +108,11 @@ header h1 {
 
 /* ztztztztztzt */
 .modal-content {
-    background-color: var(--orangeCard);
+    background-color: var(--orangeArticle);
 }
 
 
 @media screen and (min-width: 768px) {
-    .customBtn {
-        width: 25%;
-    }
     .customBtn {
         width: 25%;
         margin-top: 1%;
