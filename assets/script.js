@@ -106,7 +106,7 @@ var searchAlert = $('#searchAlert');
 var articlesPerPage = 4; //This number be change anytime if we want later.
 var lastPage;
 var pageIndex;
-var fetchedData;
+var fetchedData; //Importain, this variable saves each search temporary.
 
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
@@ -185,7 +185,8 @@ function modalSubmit(event) {
     var formatedEnd = $('#end-date-input').val();
     artBegin = moment(formatedBegin, "D MMM, YY").format("YYYYMMDD");
     artEnd = moment(formatedEnd, "D MMM, YY").format("YYYYMMDD");
-    displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
+    getArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
+    displaySearch();
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
   } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing()}
@@ -211,41 +212,49 @@ function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
 
 //---------------------------------------------------------------------------------------------------------------------
 //EXAMPLE：https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=20210409&end_date=20210411&query=nets&fq=news_desk:(%22Sports%22)&sort=newest&api-key=gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6
-function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
-
+function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
+  //First call need to check how many article results return.
   var targetUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date='
     + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&api-key=' + zhouTianKey;
   fetch(targetUrl)
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (data) {
-          //console.log(data.response.docs);
-          fetchedData = data;
-          if (!fetchedData.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
+          //fetchedData = data;
+          var artTotal = data.response.meta.hits;
+          //if artTotal is a large number, say 986, then we need 99 calls to get all results. (limit: 10 article per call for this Article Search API)
+          var callTotal = Math.ceil(artTotal/10);
+
+          if (!artTotal) { searchAlert.text("Result Not Found! Please make New Search."); flashing() }
+          //This is a mobile first app, remind user to double check their searching range.
+          else if (artTotal > 50) { searchAlert.text("More than 50 Articles Found! Please Cut Down Date Range or Specify keywords."); flashing() }
+          //Note: In this else branch, artTotal range from 1 to 50 
           else {
-            saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
-            $('#artResults').text(data.response.docs.length + ' articles found to match your search.');
-            //To clear previous page btns first.
-            $('#pages').children().remove();
-            //To create page btns for search results.
-            var pageNum = 0;
-            for (var j = 0; j < data.response.docs.length; j=j+articlesPerPage) {
-              pageNum = pageNum + 1;
-              $('#pages').append($('<button>').addClass('pageBtn').attr('data-index', pageNum).text(pageNum));
-              lastPage = pageNum;
-            };
-            for (var i = 0; i < articlesPerPage; i++) {
-              var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
-              var artTypeEl = $('<h5>').text(data.response.docs[i].news_desk);
-              var pubDate = data.response.docs[i].pub_date.split("T");
-              var dateEl = $('<h5>').text(pubDate[0]);
-              var artTitleEl = $('<h1>').addClass('card-header').text(data.response.docs[i].headline.main);
-              var abstractEl = $('<p>').text(data.response.docs[i].abstract);
-              var authorEl = $('<h3>').text(data.response.docs[i].byline.original);
-              var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", data.response.docs[i].web_url).attr("target", "_blank").text("Article");
-              artEl.append(artTypeEl, dateEl, artTitleEl, abstractEl, authorEl, artLinkEl);
-              artCardsEl.append(artEl);
-            };
+            saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only get saved if it is a meaningful search.
+            $('#artResults').text(artTotal + ' articles found to match your search.');
+            //Now to construct the fetchedData array.
+            fetchedData = [];
+            for (var i = 0; i < callTotal; i++) {
+              var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date='
+              + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + i + '&api-key=' + zhouTianKey;
+              fetch(eachUrl)
+                .then(function (response) {
+                  if (response.ok) {
+                    response.json().then(function (data) {
+                      //actions here.
+                      for (var i = 0; i < data.response.docs.length; i++) {
+                        fetchedData.push(data.response.docs[i]);
+                      }
+                    });
+                  } else {
+                    searchAlert.text('Error: ' + response.statusText); flashing()
+                  }
+                })
+                .catch(function (error) {
+                  searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()
+                });
+            }
+            //Now we have the fetchedData array.
           }
         });
       } else {
@@ -257,6 +266,33 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
     });
 };
 //---------------------------------------------------------------------------------------------------------------------
+
+function displaySearch(){
+  //To clear previous page btns first.
+  $('#pages').children().remove();
+  //To create page btns for search results.
+  var pageNum = 0;
+  for (var i = 0; i < fetchedData.length; i=i+articlesPerPage) {
+    pageNum = pageNum + 1;
+    $('#pages').append($('<button>').addClass('pageBtn').attr('data-index', pageNum).text(pageNum));
+    lastPage = pageNum;
+  };
+  for (var i = 0; i < articlesPerPage; i++) {
+    var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
+    var artTypeEl = $('<h5>').text(fetchedData[i].news_desk);
+    var pubDate = fetchedData[i].pub_date.split("T");
+    var dateEl = $('<h5>').text(pubDate[0]);
+    var artTitleEl = $('<h1>').addClass('card-header').text(fetchedData[i].headline.main);
+    var abstractEl = $('<p>').text(fetchedData[i].abstract);
+    var authorEl = $('<h3>').text(fetchedData[i].byline.original);
+    var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", fetchedData[i].web_url).attr("target", "_blank").text("Article");
+    artEl.append(artTypeEl, dateEl, artTitleEl, abstractEl, authorEl, artLinkEl);
+    artCardsEl.append(artEl);
+  };
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 //Click on page btns to show results in different pages.
 //Need an if condition for last page display! 
 //For example, if we have 10 results, 4 results per page, page 3 will only have 2 results.
@@ -266,20 +302,20 @@ function displayPage(event) {
   var pageClicked = $(event.target);
   pageIndex = parseInt(pageClicked.attr("data-index"))-1;
   var targetPage = pageIndex*articlesPerPage;
-  var remainder = fetchedData.response.docs.length % articlesPerPage;
+  var remainder = fetchedData.length % articlesPerPage;
   var loopNumber;
   //If click on last page.
   if ( parseInt(pageClicked.attr("data-index")) == lastPage ){ loopNumber = remainder }
   else{ loopNumber = articlesPerPage }
-  for (var k = 0; k < loopNumber; k++) {
+  for (var i = 0; i < loopNumber; i++) {
     var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
-    var artTypeEl = $('<h5>').text(fetchedData.response.docs[targetPage+k].news_desk);
-    var pubDate = fetchedData.response.docs[targetPage+k].pub_date.split("T");
+    var artTypeEl = $('<h5>').text(fetchedData[targetPage+i].news_desk);
+    var pubDate = fetchedData[targetPage+i].pub_date.split("T");
     var dateEl = $('<h5>').text(pubDate[0]);
-    var artTitleEl = $('<h1>').addClass('card-header').text(fetchedData.response.docs[targetPage+k].headline.main);
-    var abstractEl = $('<p>').text(fetchedData.response.docs[targetPage+k].abstract);
-    var authorEl = $('<h3>').text(fetchedData.response.docs[targetPage+k].byline.original);
-    var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", fetchedData.response.docs[targetPage+k].web_url).attr("target", "_blank").text("Article");
+    var artTitleEl = $('<h1>').addClass('card-header').text(fetchedData[targetPage+i].headline.main);
+    var abstractEl = $('<p>').text(fetchedData[targetPage+i].abstract);
+    var authorEl = $('<h3>').text(fetchedData[targetPage+i].byline.original);
+    var artLinkEl = $('<a>').addClass('btn btn-light').attr("href", fetchedData[targetPage+i].web_url).attr("target", "_blank").text("Article");
     artEl.append(artTypeEl, dateEl, artTitleEl, abstractEl, authorEl, artLinkEl);
     artCardsEl.append(artEl);
   }
@@ -314,7 +350,5 @@ function flashing(){
   flashClass.css('opacity', '1');
   setTimeout(function(){ 
     flashClass.css('opacity','0');
-  }, 2000)
+  }, 5000)
 }
-
-
