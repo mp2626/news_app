@@ -1,38 +1,40 @@
-// Top Stories Vars
+// Const Vars
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
-const mainWeatherEl = $("#currentWeatherlocation");
-// let weatherData = ""
-var currentDay = moment().format("DD/MM/YY")
+const mainWeatherEl = $("#currentWeatherlocaton");
+const currentDay = moment().format("DD/MM/YY");
+const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46";
+const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
+// Changing Vars
+let weatherData = "";
+let topNewsMin = 0;
+let topNewsMax = 4;
 
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
-
 
 //current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 // Gets User location
 function getLocation() {
   const successCallBack = (position) => {
-    console.log(position);
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    console.log(lat, lon);
-    getlocalWeather(lat, lon);
+    getLocalWeather(lat, lon);
   }
   const errorCallBack = (error) => {
     console.error(error)
   }
   navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
-}
-getLocation();
+};
 
-// Display's local weather
-function getlocalWeather(lat, lon) {
+// fetches weather data and call display function
+function getLocalWeather(lat, lon) {
   var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
   fetch(openWeather)
     .then(function (response) {
+      console.log(response);
       return response.json();
     })
     .then(function (data) {
@@ -75,17 +77,6 @@ function displayLocalWeather(weatherData) {
   console.log(weatherDataTemp);
 }
 
-
-
-
-// bootstrap
-
-let topNewsMin = 0;
-let topNewsMax = 5;
-
-// Top Stories API Var
-const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
-
 // Top Stories Fetch API Function
 function getTopStories(search) {
   fetch(topStoriesAPI)
@@ -101,12 +92,13 @@ function getTopStories(search) {
       renderTopStories(topNews);
     });
 }
-// Top Stories Card Render Function
 
+// Top Stories Card Render Function
 function renderTopStories(topNews) {
   // clear section
   $('#tS').text('Top Stories');
-  artCardsEl.children().remove(); //remove previous searched article results
+  //remove previous searched article results
+  artCardsEl.children().remove();
   newCard.children().remove('div');
   // vars
   news = topNews.results;
@@ -141,9 +133,12 @@ function renderTopStories(topNews) {
     }
   }
 
+  // keeps count of news arrays and lets the user know when they are up to date
   if (topNewsMin < news.length) {
-    topNewsMin += 5;
-    topNewsMax += 5;
+    topNewsMin += 4;
+    topNewsMax += 4;
+  } else {
+    $('#tS').text("You're up to date with today's top stories. Why not search for an article?");
   }
 }
 
@@ -156,8 +151,6 @@ nextNews.on("click", (event) => {
   renderTopStories(topNews);
   scroll();
 });
-
-getTopStories();
 
 //ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
 //Article Search API Script below
@@ -352,7 +345,6 @@ $(function () {
   }
 });
 
-
 //Set timer to flash message
 function flashing() {
   flashClass.css('opacity', '1');
@@ -360,3 +352,6 @@ function flashing() {
     flashClass.css('opacity', '0');
   }, 2000)
 }
+
+getTopStories();
+getLocation();
