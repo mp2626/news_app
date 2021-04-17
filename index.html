@@ -39,14 +39,16 @@
         <section class="container-fluid">
             <div class="stories">
                 <h1 id="tS"></h1>
-                <h2 class="flash" id="searchAlert"></h2>
             </div>
             <div id="newCards" class="row justify-content-center">
             </div>
         </section>
 
         <!-- Article Search Feature -->
-        <section class="container-fluid">
+        <section class="container-fluid stories">
+            <h2 id="artResults"></h2>
+            <h2 class="flash" id="searchAlert"></h2>
+            <div id = "pages"></div>
             <div id="articleCards" class="row justify-content-center"></div>
         </section>
     </main>
@@ -80,7 +82,7 @@
 
                         <div class="form-group">
                             <label for="newsDeskInput">Article Type</label>
-                            <select class="form-control" id="newsDeskInput">
+                            <select class="form-control" id="newsDeskInput" required>
                                 <option value="">None</option>
                             </select>
                         </div>
