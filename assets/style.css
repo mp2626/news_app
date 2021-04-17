@@ -26,7 +26,7 @@ h2 {
     font-size: 30px;
 }
     
- h3 {
+h3 {
     font-size: 25px;
 }
 
@@ -42,9 +42,8 @@ header h1 {
 }
 
 #currentWeatherlocation img {
-margin-top: -14.8%;
-margin-left: 4%;
-
+    margin-top: -14.8%;
+    margin-left: 4%;
 }
 
 h5 {
@@ -61,6 +60,8 @@ h5 {
 .jumbotron {
     background-color: rgb(252, 114, 51, 0);
     width: 100%;
+    margin-bottom: 1%;
+    padding-bottom: 2%;
 }
 
 #nav {

@@ -49,7 +49,7 @@ Provides the user with the functionality to search for articles of their choice.
 
 Displays the weather for the day based on the users GEO location.
 
-![Saved Searches](assets/images/saved.png)
+![Saved Searches](assets/images/weather.png)
 
 # Setup Up
 
@@ -61,10 +61,11 @@ The user will require a New York Times account to access the articles.
 * Add a comments/forum section that allows users the discuss/debate tagged news articles, this will create a community around the app.
 
 # Link to Git Hub
-
+https://github.com/ZhouTian0716/project1-08
 
 # Link to Site
 
+https://zhoutian0716.github.io/project1-08/
 
 # Programming Languages/APIs
 
