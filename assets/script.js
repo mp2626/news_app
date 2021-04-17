@@ -216,6 +216,8 @@ searchFormEl.on('click', '#searchBtn', modalSubmit);
 function modalSubmit(event) {
   event.preventDefault();
   newCard.children().remove('div'); // clear top story cards.
+  $('#artResults').text('');
+  $('#pages').children().remove(); //To clear previous page btns.
   $('#tS').text('Article Search Results');
   if ($('#begin-date-input').val() && $('#end-date-input').val()) {
     artCardsEl.children().remove(); //remove previous searched article results
@@ -264,7 +266,7 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           var artTotal = data.response.meta.hits;
-          //if artTotal is a large number, say 986, then we need 99 calls to get all results. (limit: 10 article per call for this Article Search API)
+          //if artTotal is a large number, say 666, then we need 67 calls to get all results. (limit: 10 article per call for this Article Search API)
           callTotal = Math.ceil(artTotal/10);
 
           if (!artTotal) { searchAlert.text("Result Not Found! Please make New Search."); flashing() }
@@ -274,9 +276,9 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only get saved if it is a meaningful search.
             $('#artResults').text(artTotal + ' articles found to match your search.');
-            for (var i = 0; i < callTotal; i++) {
-              eachCall(i);
-            };
+            //************************** 
+            allCalls();
+            //************************** 
           }
         });
       } else {
@@ -287,29 +289,38 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()
     });
 };
-//---------------------------------------------------------------------------------------------------------------------
-//Function to construct the fetchedData array.
+//**********************************************************************************************************************************
+//Function to make each api call.
 async function eachCall(i){
   try {
       var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date=' + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + i + '&api-key=' + zhouTianKey;
       let eachfetch = await fetch(eachUrl);
       eachfetch = await eachfetch.json();
-      for (var i = 0; i < eachfetch.response.docs.length; i++) { fetchedData.push(eachfetch.response.docs[i]); } 
-      if (i==callTotal-1){displaySearch()};
+      for (var i = 0; i < eachfetch.response.docs.length; i++) { fetchedData.push(eachfetch.response.docs[i]) } 
   } catch(message){console.log("fetch fail.")};
 }
-//---------------------------------------------------------------------------------------------------------------------
+//**********************************************************************************************************************************
+//Function to construct the fetchedData array.
+async function allCalls(){
+  for (var i = 0; i < callTotal; i++) {
+    await eachCall(i);
+  };
+  displaySearch();
+}
+//**********************************************************************************************************************************
 function displaySearch(){
-  //To clear previous page btns first.
-  $('#pages').children().remove();
   //To create page btns for search results.
   var pageNum = 0;
   for (var i = 0; i < fetchedData.length; i=i+articlesPerPage) {
     pageNum = pageNum + 1;
-    $('#pages').append($('<button>').addClass('pageBtn btn-light').attr('data-index', pageNum).text(pageNum));
+    $('#pages').append($('<button>').addClass('pageBtn btn btn-light').attr('data-index', pageNum).text(pageNum));
     lastPage = pageNum;
   };
-  for (var i = 0; i < articlesPerPage; i++) {
+  //Note: need to check if return search results less than articlesPerPage
+  var loops;
+  if (fetchedData.length < articlesPerPage){ loops = fetchedData.length }
+  else{ loops = fetchedData.length }
+  for (var i = 0; i < loops; i++) {
     var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
     var artTypeEl = $('<h5>').text(fetchedData[i].news_desk);
     var pubDate = fetchedData[i].pub_date.split("T");
@@ -322,8 +333,6 @@ function displaySearch(){
     artCardsEl.append(artEl);
   };
 }
-
-
 //---------------------------------------------------------------------------------------------------------------------
 //Click on page btns to show results in different pages.
 //Need an if condition for last page display! 
