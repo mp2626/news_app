@@ -57,6 +57,9 @@ The user will require a New York Times account to access the articles.
 
 # Future Development
 
+* Expand the API to include additional news feeds which will allow the user to select their favourites, providing the user with a greater choice. The objective is to make the app a one stop shop for all the users news.
+* Add a comments/forum section that allows users the discuss/debate tagged news articles, this will create a community around the app.
+
 # Link to Git Hub
 
 
