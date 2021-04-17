@@ -186,6 +186,7 @@ function modalSubmit(event) {
     var formatedEnd = $('#end-date-input').val();
     artBegin = moment(formatedBegin, "D MMM, YY").format("YYYYMMDD");
     artEnd = moment(formatedEnd, "D MMM, YY").format("YYYYMMDD");
+    fetchedData = [];
     getArticles(artKey, artSort, newsDesk, artBegin, artEnd); //This fetching will neet a while to process.
     
     //displaySearch();
@@ -233,9 +234,9 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only get saved if it is a meaningful search.
             $('#artResults').text(artTotal + ' articles found to match your search.');
-            waitFetch();
-
-
+            for (var i = 0; i < callTotal; i++) {
+              eachCall(i);
+            };
           }
         });
       } else {
@@ -248,42 +249,15 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
 };
 //---------------------------------------------------------------------------------------------------------------------
 //Function to construct the fetchedData array.
-function searchCalls(){
-return new Promise((resolve, reject) => {
-  
-  fetchedData = [];
-  for (var i = 0; i < callTotal; i++) {
-    var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date=' + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + i + '&api-key=' + zhouTianKey;
-    fetch(eachUrl)
-      .then(function (response) {
-        if (response.ok) {
-          response.json().then(function (data) {
-            for (var i = 0; i < data.response.docs.length; i++) { fetchedData.push(data.response.docs[i]) }
-          });
-        } 
-        else { searchAlert.text('Error: ' + response.statusText); flashing() }
-      })
-      .catch( function (error) {searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()} )
-  }
-  resolve(fetchedData);
-});
+async function eachCall(i){
+  try {
+      var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date=' + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + i + '&api-key=' + zhouTianKey;
+      let eachfetch = await fetch(eachUrl);
+      eachfetch = await eachfetch.json();
+      for (var i = 0; i < eachfetch.response.docs.length; i++) { fetchedData.push(eachfetch.response.docs[i]); } 
+      if (i==callTotal-1){displaySearch()};
+  } catch(message){console.log("fetch fail.")};
 }
-
-
-
-
-//---------------------------------------------------------------------------------------------------------------------
-
-
-
-async function waitFetch() {
-let result = await searchCalls();
-  console.log(result);
-}
-
-//displaySearch();
-
-
 //---------------------------------------------------------------------------------------------------------------------
 function displaySearch(){
   //To clear previous page btns first.
@@ -370,3 +344,6 @@ function flashing(){
     flashClass.css('opacity','0');
   }, 5000)
 }
+
+
+
