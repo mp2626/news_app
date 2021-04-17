@@ -3,8 +3,8 @@ const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
 const mainWeatherEl = $("#currentWeatherlocaton");
+const currentDay = moment().format("DD/MM/YY");
 const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46";
-// Top Stories API Var
 const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
 // Changing Vars
 let weatherData = "";
@@ -18,41 +18,63 @@ toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 // Gets User location
 function getLocation() {
   const successCallBack = (position) => {
-    console.log(position);
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    console.log(lat, lon);
-    localWeather(lat, lon);
+    getLocalWeather(lat, lon);
   }
   const errorCallBack = (error) => {
-    console.log(error);
+    console.error(error)
   }
   navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
-}
-getLocation();
+};
 
-// Display's local weather
-function localWeather(lat, lon) {
-  var openWeather = "https:/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
+// fetches weather data and call display function
+function getLocalWeather(lat, lon) {
+  var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
   fetch(openWeather)
     .then(function (response) {
+      console.log(response);
       return response.json();
     })
     .then(function (data) {
       console.log(data);
+      displayLocalWeather(data)
       $("#currentWeatherlocation").text()
     });
 };
 
+// // function displayLocalWeather(data) {
+// //   let icon = data.weather[0].icon
 
-//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
-function localWeather(data) {
+// //   var skyWeather = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
 
-  var WeatherEl = $("<h3>").text(weatherData);
+// //   var currentTemp = document.createElement('h4');
+// //   var date = document.createElement('h4');
+// //   var currentHumid = document.createElement('h4');
+// //   var windSpeed = document.createElement('h4');
+// //   var weatherIcon = document.createElement('img')
 
-  mainWeatherEl.append(WeatherEl)
+// weatherIcon.src = skyWeather
+// currentTemp.textContent("Current Tempreture:" + data.main.temp + "°C")
+// currentHumid.textContent("Current Humidity:" + data.main.humidity + "%")
+// windSpeed.textContent("Current Windspeed:" + data.wind.speed + "km/h")
+// date.textContent = ("(" + currentDay + ")")
 
+function displayLocalWeather(weatherData) {
+
+  let icon = weatherData.weather[0].icon
+
+  var skyWeather = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+
+  console.log(weatherData.main.temp_max);
+  let weatherDataTemp = weatherData.main.temp;
+  let weatherDataWind = weatherData.wind.speed;
+  var weatherTempEl = $("<h5>").text("T: " + weatherDataTemp + " ℃").addClass("");
+  var weatherWindEl = $("<h5>").text("W: " + weatherDataWind + " Km/h").addClass("")
+  var weatherImgEl = $("<img>").attr("src", skyWeather).addClass("");
+  mainWeatherEl.append(weatherImgEl, weatherTempEl, weatherWindEl);
+  console.log(weatherDataTemp);
 }
 
 // Top Stories Fetch API Function
@@ -78,9 +100,10 @@ function renderTopStories(topNews) {
   //remove previous searched article results
   artCardsEl.children().remove();
   newCard.children().remove('div');
+  // vars
   news = topNews.results;
 
-  // loop to gather data and create news feed
+  // loop to gather data and create feed
   for (i = 0; i < news.length; i++) {
 
     if (i >= topNewsMin && i < topNewsMax) {
@@ -119,20 +142,15 @@ function renderTopStories(topNews) {
   }
 }
 
-// scrolls the page in a controlled way to top stories when the users clicks next
 function scroll() {
   window.scrollTo(0, 160);
 }
 
-// calls render top stories when the use clicks top stories button 
 nextNews.on("click", (event) => {
   event.preventDefault();
   renderTopStories(topNews);
   scroll();
 });
-
-// loads tops stories when the page initially loads.
-getTopStories();
 
 //ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
 //Article Search API Script below
@@ -143,15 +161,17 @@ const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 var searchModalEl = $('#searchModal');
 var searchFormEl = $('#project-form');
 var artCardsEl = $('#articleCards');
-
+var flashClass = $('.flash');
+var modalAlert = $('#modalAlert');
+var searchAlert = $('#searchAlert');
 //Search inputs
 var artKey, artSort, newsDesk, artBegin, artEnd;
 
 //LocalStorage variables
 var index;
 var searchObj;
-var searchHistory = [];
 var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+
 //---------------------------------------------------------------------------------------------------------------------
 const newsDeskArray = ['Arts', 'Automobiles', 'Business', 'Culture', 'Education', 'Environment', 'Fashion', 'Food', 'Foreign', 'Health', 'Movies', 'Politics', 'Science', 'Sports', 'SundayBusiness', 'Technology', 'Travel', 'U.S.', 'Weather', 'World']
 createNewsDeskTypes();
@@ -167,6 +187,7 @@ $('#modalBtn').on('click', modalUpdate);
 //Load previous search and create drop down buttons
 function modalUpdate() {
   $('#dropdownBtn').children().remove(); //Needs to clean up buttons generated from previous event clicks.
+  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   if (searchHistory) { historyBtns() } else { return };
 }
 //---------------------------------------------------------------------------------------------------------------------
@@ -191,6 +212,7 @@ $('#dropdownBtn').on('click', '.dropdown-item', autoComplete);
 function autoComplete(event) {
   event.preventDefault();
   var btnClicked = $(event.target);
+  searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   if (searchHistory) {
     //get the index of the clicked button
     index = parseInt(btnClicked.attr("data-index"));
@@ -203,7 +225,6 @@ function autoComplete(event) {
     $('#end-date-input').val(moment(reformatEnd, "YYYYMMDD").format("D MMM, YY"));
   }
 }
-
 //---------------------------------------------------------------------------------------------------------------------
 //Actions after click on search.
 searchFormEl.on('click', '#searchBtn', modalSubmit);
@@ -223,11 +244,11 @@ function modalSubmit(event) {
     displayArticles(artKey, artSort, newsDesk, artBegin, artEnd); //pass inputs to fetch data.docs from Article Search API.
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else { alert('Please specify Begin and End Date!') }
+  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing() }
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
-  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd };
+  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd }
   if (searchHistory) {
     for (var i = 0; i < searchHistory.length; i++) {
       //if this searchObj found in searchHistory, jump out.
@@ -255,7 +276,7 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
       if (response.ok) {
         response.json().then(function (data) {
           //console.log(data.response.docs);
-          if (!data.response.docs.length) { alert("Result Not Found, please make new searches.") }
+          if (!data.response.docs.length) { searchAlert.text("Result Not Found, please make new searches."); flashing() }
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only save if result found.
             for (var i = 0; i < data.response.docs.length; i++) {
@@ -276,11 +297,11 @@ function displayArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
           }
         });
       } else {
-        alert('Error: ' + response.statusText);
+        searchAlert.text('Error: ' + response.statusText); flashing()
       }
     })
     .catch(function (error) {
-      alert('Unable to connect to NY Times Article Search API');
+      searchAlert.text('Unable to connect to NY Times Article Search API'); flashing()
     });
 };
 //---------------------------------------------------------------------------------------------------------------------
@@ -323,3 +344,14 @@ $(function () {
     return date;
   }
 });
+
+//Set timer to flash message
+function flashing() {
+  flashClass.css('opacity', '1');
+  setTimeout(function () {
+    flashClass.css('opacity', '0');
+  }, 2000)
+}
+
+getTopStories();
+getLocation();

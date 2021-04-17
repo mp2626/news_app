@@ -1,6 +1,6 @@
 :root {
  --background: black;
- --grey:rgb(128, 128, 128, 0.5);
+ --grey:grey;
  --text: ghostwhite;
  --base:#E7EEED;
  --orange:#fc7233;
@@ -21,32 +21,46 @@ body {
 h1 {
     font-style: var(--boldText);
     }
-
+    
 h2 {
-     font-size: 30px;
+    font-size: 30px;
 }
     
-h3 {
+ h3 {
     font-size: 25px;
 }
 
 header h1 {
     font-size: 60px;
+    margin-left: 1.5%;
+    margin-top: 3%;
 }
 
 #webNews {
     margin-top: 1%;
+    margin-left: 2%;
+}
+
+#currentWeatherlocation img {
+margin-top: -14.8%;
+margin-left: 4%;
+
+}
+
+h5 {
+    margin-top: -0.5%;
+    margin-right: 2%;
 }
 
 #date {
     font-size: 20px;
+    font-weight: 500;
+    margin-left: 26%;
 }
 
 .jumbotron {
     background-color: rgb(252, 114, 51, 0);
     width: 100%;
-    margin-bottom: 0.5%;
-    padding-bottom: 2%;
 }
 
 #nav {
@@ -90,6 +104,11 @@ header h1 {
     margin-top: 2%;
 }
 
+#searchBtn {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    align-items: center;
+}
 #topNewsBar {
     display: flex;
     justify-content: center;
@@ -100,6 +119,7 @@ header h1 {
     margin-top: 0.5%;
     margin-left: 2%;
     margin-right: 2%;
+    background-color: var(--orangeCard);
 }
 
 .customBtn:hover {
@@ -111,12 +131,42 @@ header h1 {
     background-color: var(--orangeArticle);
 }
 
+.flash{
+    font-style: italic;
+    opacity: 0;
+}
+
+#modalAlert{
+    font-size: 15px;
+    padding-left: 10px;
+}
+  
 
 @media screen and (min-width: 768px) {
+
     .customBtn {
         width: 25%;
         margin-top: 1%;
         margin-left: 1%;
         margin-right: 1%;
     }
+
+    #currentWeatherlocation img {
+        margin-top: -4.9%;
+        
+    }
+        
+    h5 {
+            margin-top: -0.5%;
+            margin-right: 2%;
+    }
+        
+    #date {
+            margin-left: 18%;
+            font-size: 20px;
+            font-weight: 500;
+    }
 }
+
+
+
