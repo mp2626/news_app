@@ -2,83 +2,65 @@
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
-const mainWeatherEl = $("#currentWeatherlocaton");
+const mainWeatherEl = $("#currentWeatherlocation");
 const currentDay = moment().format("DD/MM/YY");
 const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46";
 const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
+
 // Changing Vars
-let weatherData = "";
+// let weatherData = "";
 let topNewsMin = 0;
 let topNewsMax = 4;
 
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
-//current weather at current location - When I land on the web page I am greeted with the current weather in my current location -JB
 // Gets User location
 function getLocation() {
   const successCallBack = (position) => {
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    getLocalWeather(lat, lon);
+    localWeather(lat, lon);
   }
   const errorCallBack = (error) => {
-    console.error(error)
+    console.error(error);
   }
   navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
-};
+}
+
+getLocation();
 
 // fetches weather data and call display function
-function getLocalWeather(lat, lon) {
+function localWeather(lat, lon) {
   var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
   fetch(openWeather)
     .then(function (response) {
-      console.log(response);
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
       displayLocalWeather(data)
       $("#currentWeatherlocation").text()
     });
-};
+}
 
-// // function displayLocalWeather(data) {
-// //   let icon = data.weather[0].icon
-
-// //   var skyWeather = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
-
-// //   var currentTemp = document.createElement('h4');
-// //   var date = document.createElement('h4');
-// //   var currentHumid = document.createElement('h4');
-// //   var windSpeed = document.createElement('h4');
-// //   var weatherIcon = document.createElement('img')
-
-// weatherIcon.src = skyWeather
-// currentTemp.textContent("Current Tempreture:" + data.main.temp + "°C")
-// currentHumid.textContent("Current Humidity:" + data.main.humidity + "%")
-// windSpeed.textContent("Current Windspeed:" + data.wind.speed + "km/h")
-// date.textContent = ("(" + currentDay + ")")
-
+// displays weather forecast
 function displayLocalWeather(weatherData) {
 
   let icon = weatherData.weather[0].icon
 
-  var skyWeather = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+  var skyWeather = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
 
-  console.log(weatherData.main.temp_max);
   let weatherDataTemp = weatherData.main.temp;
   let weatherDataWind = weatherData.wind.speed;
   var weatherTempEl = $("<h5>").text("T: " + weatherDataTemp + " ℃").addClass("");
   var weatherWindEl = $("<h5>").text("W: " + weatherDataWind + " Km/h").addClass("")
   var weatherImgEl = $("<img>").attr("src", skyWeather).addClass("");
   mainWeatherEl.append(weatherImgEl, weatherTempEl, weatherWindEl);
-  console.log(weatherDataTemp);
 }
 
 // Top Stories Fetch API Function
-function getTopStories(search) {
+function getTopStories() {
   fetch(topStoriesAPI)
     .then(response => {
       if (response.ok) {
@@ -117,7 +99,6 @@ function renderTopStories(topNews) {
         capNewsLocalLocation = newsLocalLocation[0].toUpperCase() + newsLocalLocation.slice(1);
       }
       articleUrl = news[i].url;
-
       // create elements
       newCardDiv = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
       cardTile = $('<h1>').addClass('card-header').text(tile);
@@ -142,19 +123,17 @@ function renderTopStories(topNews) {
   }
 }
 
+// moved user to top of page when they load new stories
 function scroll() {
   window.scrollTo(0, 160);
 }
 
+// stops page reload
 nextNews.on("click", (event) => {
   event.preventDefault();
   renderTopStories(topNews);
   scroll();
 });
-
-//ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
-//Article Search API Script below
-//ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
 
 const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 //DOM elements
@@ -351,7 +330,6 @@ function flashing() {
   setTimeout(function () {
     flashClass.css('opacity', '0');
   }, 2000)
-}
+};
 
 getTopStories();
-getLocation();
