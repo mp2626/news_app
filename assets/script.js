@@ -1,22 +1,63 @@
-// Top Stories Vars
+// Const Vars
 const newCard = $("#newCards");
 const nextNews = $("#topNews");
 const toDaysDate = $("#date");
-var currentDay = moment().format("DD/MM/YY")
+const mainWeatherEl = $("#currentWeatherlocation");
+const currentDay = moment().format("DD/MM/YY");
+const openWeather = "https://api.openweathermap.org/data/2.5/weather?q=sydney&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46";
+const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
+
+// Changing Vars
+// let weatherData = "";
+let topNewsMin = 0;
+let topNewsMax = 4;
 
 // date 
 toDaysDate.text(moment().format('ddd Do MMM, YYYY'));
 
+// Gets User location
+function getLocation() {
+  const successCallBack = (position) => {
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    localWeather(lat, lon);
+  }
+  const errorCallBack = (error) => {
+    console.error(error);
+  }
+  navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+}
 
+getLocation();
 
+// fetches weather data and call display function
+function localWeather(lat, lon) {
+  var openWeather = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric&appid=e29cd95f952ebb202a3a51f08c0a0d46"
 
+  fetch(openWeather)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      displayLocalWeather(data)
+      $("#currentWeatherlocation").text()
+    });
+}
 
+// displays weather forecast
+function displayLocalWeather(weatherData) {
 
-let topNewsMin = 0;
-let topNewsMax = 5;
+  let icon = weatherData.weather[0].icon
 
-// Top Stories API Var
-const topStoriesAPI = "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=Va9UoQ7BSpY4GzfHt7uLq6ZX16HCjwu2";
+  var skyWeather = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
+
+  let weatherDataTemp = weatherData.main.temp;
+  let weatherDataWind = weatherData.wind.speed;
+  var weatherTempEl = $("<h5>").text("T: " + weatherDataTemp + " ℃").addClass("");
+  var weatherWindEl = $("<h5>").text("W: " + weatherDataWind + " Km/h").addClass("")
+  var weatherImgEl = $("<img>").attr("src", skyWeather).addClass("");
+  mainWeatherEl.append(weatherImgEl, weatherTempEl, weatherWindEl);
+}
 
 // Top Stories Fetch API Function
 function getTopStories() {
@@ -33,12 +74,13 @@ function getTopStories() {
       renderTopStories(topNews);
     });
 }
-// Top Stories Card Render Function
 
+// Top Stories Card Render Function
 function renderTopStories(topNews) {
   // clear section
   $('#tS').text('Top Stories');
-  artCardsEl.children().remove(); //remove previous searched article results
+  //remove previous searched article results
+  artCardsEl.children().remove();
   newCard.children().remove('div');
   // vars
   news = topNews.results;
@@ -57,7 +99,6 @@ function renderTopStories(topNews) {
         capNewsLocalLocation = newsLocalLocation[0].toUpperCase() + newsLocalLocation.slice(1);
       }
       articleUrl = news[i].url;
-
       // create elements
       newCardDiv = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
       cardTile = $('<h1>').addClass('card-header').text(tile);
@@ -73,34 +114,33 @@ function renderTopStories(topNews) {
     }
   }
 
+  // keeps count of news arrays and lets the user know when they are up to date
   if (topNewsMin < news.length) {
-    topNewsMin += 5;
-    topNewsMax += 5;
+    topNewsMin += 4;
+    topNewsMax += 4;
+  } else {
+    $('#tS').text("You're up to date with today's top stories. Why not search for an article?");
   }
 }
 
+// moved user to top of page when they load new stories
 function scroll() {
   window.scrollTo(0, 160);
 }
 
+// stops page reload
 nextNews.on("click", (event) => {
   event.preventDefault();
   renderTopStories(topNews);
   scroll();
 });
 
-getTopStories();
-
-//ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
-//Article Search API Script below
-//ZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZTZT
-
 const zhouTianKey = "gfXdGsZ9MrEsXZPtKlAv5IB6NM2ImZQ6";
 //DOM elements
 var searchModalEl = $('#searchModal');
 var searchFormEl = $('#project-form');
 var artCardsEl = $('#articleCards');
-var flashClass = $('.flash'); 
+var flashClass = $('.flash');
 var modalAlert = $('#modalAlert');
 var searchAlert = $('#searchAlert');
 var callTotal;
@@ -177,7 +217,7 @@ function modalSubmit(event) {
   event.preventDefault();
   newCard.children().remove('div'); // clear top story cards.
   $('#tS').text('Article Search Results');
-  if( $('#begin-date-input').val() && $('#end-date-input').val() ){
+  if ($('#begin-date-input').val() && $('#end-date-input').val()) {
     artCardsEl.children().remove(); //remove previous searched article results
     artKey = $('#art-key-input').val().trim();
     artSort = $('#sortInput').val();
@@ -192,21 +232,21 @@ function modalSubmit(event) {
     //displaySearch();
     searchFormEl[0].reset();
     searchModalEl.modal('hide');
-  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing()}
+  } else { modalAlert.text('(Please specify Begin and End Date!)'); flashing() }
 }
 //---------------------------------------------------------------------------------------------------------------------
 function saveSearch(artKey, artSort, newsDesk, artBegin, artEnd) {
-  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date:artEnd}
-  if(searchHistory){ 
-    for(var i = 0; i < searchHistory.length; i++){
+  searchObj = { keyword: artKey, sort: artSort, type: newsDesk, begin_date: artBegin, end_date: artEnd }
+  if (searchHistory) {
+    for (var i = 0; i < searchHistory.length; i++) {
       //if this searchObj found in searchHistory, jump out.
-      if(JSON.stringify(searchHistory[i])==JSON.stringify(searchObj)){return}
+      if (JSON.stringify(searchHistory[i]) == JSON.stringify(searchObj)) { return }
     }
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-  } 
-  else{
-    searchHistory=[];
+  }
+  else {
+    searchHistory = [];
     searchHistory.push(searchObj);
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
   }
@@ -266,7 +306,7 @@ function displaySearch(){
   var pageNum = 0;
   for (var i = 0; i < fetchedData.length; i=i+articlesPerPage) {
     pageNum = pageNum + 1;
-    $('#pages').append($('<button>').addClass('pageBtn').attr('data-index', pageNum).text(pageNum));
+    $('#pages').append($('<button>').addClass('pageBtn btn-light').attr('data-index', pageNum).text(pageNum));
     lastPage = pageNum;
   };
   for (var i = 0; i < articlesPerPage; i++) {
@@ -338,12 +378,11 @@ $(function () {
 });
 
 //Set timer to flash message
-function flashing(){
+function flashing() {
   flashClass.css('opacity', '1');
-  setTimeout(function(){ 
-    flashClass.css('opacity','0');
+  setTimeout(function () {
+    flashClass.css('opacity', '0');
   }, 5000)
-}
+};
 
-
-
+getTopStories();
