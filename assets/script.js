@@ -319,7 +319,7 @@ function displaySearch(){
   //Note: need to check if return search results less than articlesPerPage
   var loops;
   if (fetchedData.length < articlesPerPage){ loops = fetchedData.length }
-  else{ loops = fetchedData.length }
+  else{ loops = articlesPerPage }
   for (var i = 0; i < loops; i++) {
     var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
     var artTypeEl = $('<h5>').text(fetchedData[i].news_desk);
@@ -346,7 +346,7 @@ function displayPage(event) {
   var remainder = fetchedData.length % articlesPerPage;
   var loopNumber;
   //If click on last page.
-  if ( parseInt(pageClicked.attr("data-index")) == lastPage ){ loopNumber = remainder }
+  if ( parseInt(pageClicked.attr("data-index")) == lastPage && remainder !== 0 ){ loopNumber = remainder }
   else{ loopNumber = articlesPerPage }
   for (var i = 0; i < loopNumber; i++) {
     var artEl = $('<div>').addClass('card col-11 col-md-11 col-lg-4');
