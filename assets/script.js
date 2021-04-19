@@ -293,9 +293,9 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
 };
 //**********************************************************************************************************************************
 //Function to make each api call.
-async function eachCall(i){
+async function eachCall(page){
   try {
-      var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date=' + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + i + '&api-key=' + zhouTianKey;
+      var eachUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=' + artBegin + '&end_date=' + artEnd + '&query=' + artKey + '&fq=news_desk:(%22' + newsDesk + '%22)&sort=' + artSort + '&page=' + page + '&api-key=' + zhouTianKey;
       let eachfetch = await fetch(eachUrl);
       eachfetch = await eachfetch.json();
       for (var i = 0; i < eachfetch.response.docs.length; i++) { fetchedData.push(eachfetch.response.docs[i]) } 
