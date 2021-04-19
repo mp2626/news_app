@@ -79,8 +79,8 @@ function getTopStories() {
 function renderTopStories(topNews) {
   // clear section
   $('#tS').text('Top Stories');
-  //remove previous searched article results
-  $('#artResults').text('');
+  $('#pages').children().remove(); //remove previous searched article page btns.
+  $('#artResults').text(''); //remove previous searched article results
   artCardsEl.children().remove();
   newCard.children().remove('div');
   // vars
