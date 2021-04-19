@@ -80,6 +80,7 @@ function renderTopStories(topNews) {
   // clear section
   $('#tS').text('Top Stories');
   //remove previous searched article results
+  $('#artResults').text('');
   artCardsEl.children().remove();
   newCard.children().remove('div');
   // vars
@@ -275,7 +276,8 @@ function getArticles(artKey, artSort, newsDesk, artBegin, artEnd) {
           //Note: In this else branch, artTotal range from 1 to 50 
           else {
             saveSearch(artKey, artSort, newsDesk, artBegin, artEnd); //Search inputs only get saved if it is a meaningful search.
-            $('#artResults').text(artTotal + ' articles found to match your search.');
+            if (artTotal < 2){ $('#artResults').text(artTotal + ' article found to match your search.') }
+            else { $('#artResults').text(artTotal + ' articles found to match your search.') }
             //************************** 
             allCalls();
             //************************** 
