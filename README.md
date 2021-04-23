@@ -61,11 +61,11 @@ The user will require a New York Times account to access the articles.
 * Add a comments/forum section that allows users the discuss/debate tagged news articles, this will create a community around the app.
 
 # Link to Git Hub
-https://github.com/ZhouTian0716/project1-08
+https://github.com/mp2626/news_app
 
 # Link to Site
 
-https://zhoutian0716.github.io/project1-08/
+https://mp2626.github.io/news_app/
 
 # Programming Languages/APIs
 
